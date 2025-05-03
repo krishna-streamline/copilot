@@ -1,0 +1,284 @@
+{
+  "table_name": "MAIN_DEVICES",
+  "description": "Stores telemetry data from Jamf-managed Apple devices. Data is updated every 30 minutes.",
+  "latest_snapshot_rule": "WHERE SNAPSHOT_TIME = (SELECT MAX(SNAPSHOT_TIME) FROM MAIN_DEVICES)",
+  "columns": [
+    {
+      "name": "ID",
+      "type": "NUMBER",
+      "description": "Identifier for device in MDM Service.",
+      "sample": 3495
+    },
+    {
+      "name": "NAME",
+      "type": "STRING",
+      "description": "Name of the device as defined in Jamf or MDM.",
+      "sample": "KIKO-D4VYCTQW15"
+    },
+    {
+      "name": "UDID",
+      "type": "STRING",
+      "description": "UUID referred to the device in Apple ecosystem.",
+      "sample": "00008110-000E34EC3CF9401E"
+    },
+    {
+      "name": "COUNTRYID",
+      "type": "STRING",
+      "description": "Country ID of the store where the device is assigned.",
+      "sample": "FR"
+    },
+    {
+      "name": "CITY",
+      "type": "STRING",
+      "description": "City in the country where the store is located.",
+      "sample": "Rennes"
+    },
+    {
+      "name": "DONOTDISTURBENABLED",
+      "type": "NUMBER",
+      "description": "Boolean flag indicating whether Do Not Disturb is enabled for the device.",
+      "sample": false
+    },
+    {
+      "name": "IPADDRESS",
+      "type": "STRING",
+      "description": "IP address allocated to the device.",
+      "sample": "85.118.51.1"
+    },
+    {
+      "name": "LASTENROLLEDDATE",
+      "type": "TIMESTAMP_TZ",
+      "description": "Date when the device was last enrolled into MDM services.",
+      "sample": "2023-10-25 15:54:23.551 Z"
+    },
+    {
+      "name": "LASTINVENTORYUPDATEDATE",
+      "type": "TIMESTAMP_TZ",
+      "description": "Date when the last inventory update occurred.",
+      "sample": "2025-04-24 08:14:35.421 Z"
+    },
+    {
+      "name": "MANAGED",
+      "type": "NUMBER",
+      "description": "Boolean value indicating if the device is managed by MDM services.",
+      "sample": true
+    },
+    {
+      "name": "OSBUILD",
+      "type": "STRING",
+      "description": "OS build number installed on the device.",
+      "sample": "22D72"
+    },
+    {
+      "name": "OSVERSION",
+      "type": "STRING",
+      "description": "OS version installed on the device.",
+      "sample": "18.3.1"
+    },
+    {
+      "name": "HARDWAREDEVICEID",
+      "type": "NUMBER",
+      "description": "Hardware identifier for the device.",
+      "sample": ""
+    },
+    {
+      "name": "MODEL",
+      "type": "STRING",
+      "description": "Device model (e.g., iPhone 13).",
+      "sample": "iPhone 13"
+    },
+    {
+      "name": "MODELNUMBER",
+      "type": "STRING",
+      "description": "Model number assigned to the device.",
+      "sample": "MLPF3QL"
+    },
+    {
+      "name": "DEVICE_MODEL",
+      "type": "STRING",
+      "description": "Device model type (e.g., iPhone, iPad, Mac).",
+      "sample": "iPhone"
+    },
+    {
+      "name": "SERIALNUMBER",
+      "type": "STRING",
+      "description": "Serial number of the device.",
+      "sample": "D4VYCTQW15"
+    },
+    {
+      "name": "WIFIMACADDRESS",
+      "type": "STRING",
+      "description": "Wi-Fi MAC address of the device.",
+      "sample": "60:D0:39:65:B1:AF"
+    },
+    {
+      "name": "BATTERYLEVEL",
+      "type": "NUMBER",
+      "description": "Battery percentage of the device.",
+      "sample": 100
+    },
+    {
+      "name": "LOSTMODEENABLED",
+      "type": "NUMBER",
+      "description": "Boolean value indicating whether Lost Mode is enabled on the device.",
+      "sample": false
+    },
+    {
+      "name": "LOSTMODEENABLEDDATE",
+      "type": "TIMESTAMP_TZ",
+      "description": "Date when Lost Mode was enabled on the device.",
+      "sample": "2023-10-25 15:54:19.579 Z"
+    },
+    {
+      "name": "USERNAME",
+      "type": "STRING",
+      "description": "Username associated with the device.",
+      "sample": "FR_0704_COMPANION_02"
+    },
+    {
+      "name": "STORE",
+      "type": "NUMBER",
+      "description": "Store number where the device is allocated.",
+      "sample": 704
+    },
+    {
+      "name": "TYPE",
+      "type": "STRING",
+      "description": "Type of device (e.g., POS, CFD, Companion, Spare) as defined in the MDM provider.",
+      "sample": "COMPANION"
+    },
+    {
+      "name": "PROFILES",
+      "type": "STRING",
+      "description": "Device configuration profiles installed through MDM.",
+      "sample": "[{\"displayName\":\"Home Screen Layout\",\"identifier\":\"5AE30D9E-FF8C-4CAA-BC9B-B435B79BA1C8\",\"lastInstalled\":\"2024-03-27T00:18:00.29Z\",\"removable\":false,\"uuid\":\"5AE30D9E-FF8C-4CAA-BC9B-B435B79BA1C8\",\"version\":\"1\"},{\"displayName\":\"Clientela Production - Webclip\",\"identifier\":\"A3766343-78B2-4CE3-87BD-E31EE1C5192C\",\"lastInstalled\":\"2024-06-25T20:17:06.943Z\",\"removable\":false,\"uuid\":\"A3766343-78B2-4CE3-87BD-E31EE1C5192C\",\"version\":\"1\"},{\"displayName\":\"MDM Profile\",\"identifier\":\"00000000-0000-0000-A000-4A414D460003\",\"lastInstalled\":\"2023-10-25T15:54:36.572Z\",\"removable\":false,\"uuid\":\"00000000-0000-0000-A000-4A414D460003\",\"version\":\"1\"},{\"displayName\":\"Restriction - Device Name Modification\",\"identifier\":\"539CAF5E-7D63-46FF-B9BA-CECFEF27A599\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"539CAF5E-7D63-46FF-B9BA-CECFEF27A599\",\"version\":\"1\"},{\"displayName\":\"Restriction - Open-In Management\",\"identifier\":\"AD521811-48DE-4B1C-A41E-7424D93AA7FA\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"AD521811-48DE-4B1C-A41E-7424D93AA7FA\",\"version\":\"1\"},{\"displayName\":\"Restriction - Installing Configuration profile\",\"identifier\":\"F1302716-50CC-4A8A-820F-FB43D29A212A\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"F1302716-50CC-4A8A-820F-FB43D29A212A\",\"version\":\"1\"},{\"displayName\":\"Lock Screen User\",\"identifier\":\"75EE2054-06D9-4F15-8EF7-9699B5775C13\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"75EE2054-06D9-4F15-8EF7-9699B5775C13\",\"version\":\"1\"},{\"displayName\":\"Restriction - Erase all content and settings\",\"identifier\":\"58109925-1AA9-4700-B63B-24838E979E6E\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"58109925-1AA9-4700-B63B-24838E979E6E\",\"version\":\"1\"},{\"displayName\":\"Restriction - VPN Configurations\",\"identifier\":\"8618BEB1-94FA-4579-85C1-8F21BFD7973D\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"8618BEB1-94FA-4579-85C1-8F21BFD7973D\",\"version\":\"1\"},{\"displayName\":\"Restriction - Apps and App Store\",\"identifier\":\"1405DF38-E735-4405-8662-590B08A8BCBE\",\"lastInstalled\":\"2025-02-03T23:20:14.947Z\",\"removable\":false,\"uuid\":\"1405DF38-E735-4405-8662-590B08A8BCBE\",\"version\":\"1\"},{\"displayName\":\"Defer software update\",\"identifier\":\"991BD7D8-B6D4-477E-A4BC-B8F6CF6967B4\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"991BD7D8-B6D4-477E-A4BC-B8F6CF6967B4\",\"version\":\"1\"},{\"displayName\":\"Restriction - Pairing with Non-Configuration Host\",\"identifier\":\"3697EAFF-0AB5-4125-9E42-A61B081B3A13\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"3697EAFF-0AB5-4125-9E42-A61B081B3A13\",\"version\":\"1\"},{\"displayName\":\"Restriction - Screenshots and screen recording\",\"identifier\":\"7C7AD308-4A7D-4FCE-AFA8-83863A861E43\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"7C7AD308-4A7D-4FCE-AFA8-83863A861E43\",\"version\":\"1\"},{\"displayName\":\"App Store Restriction\",\"identifier\":\"com.jamfsoftware.applicationaccess.restrictappstore.profile\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"D6E67516-1F6D-4A85-B410-EED62F66F437\",\"version\":\"1\"},{\"displayName\":\"Restriction - General Restrictions\",\"identifier\":\"1FDD469B-7BCF-41BC-ACD9-476D27ADD623\",\"lastInstalled\":\"2025-02-03T23:20:16.429Z\",\"removable\":false,\"uuid\":\"1FDD469B-7BCF-41BC-ACD9-476D27ADD623\",\"version\":\"1\"},{\"displayName\":\"Restriction - iCloud Services\",\"identifier\":\"478D5052-C514-4F21-ACE7-567DEA901CAC\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"478D5052-C514-4F21-ACE7-567DEA901CAC\",\"version\":\"1\"},{\"displayName\":\"Prod K-EVA Wifi No SSID Lock\",\"identifier\":\"214472A9-33A2-4B79-99CA-AA57D108D625\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"214472A9-33A2-4B79-99CA-AA57D108D625\",\"version\":\"1\"},{\"displayName\":\"Restriction - Camera\",\"identifier\":\"C8491B51-1AF0-4812-9399-69A913D62DB6\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"C8491B51-1AF0-4812-9399-69A913D62DB6\",\"version\":\"1\"},{\"displayName\":\"Prod K-Support Wifi\",\"identifier\":\"7CD7A6A7-590F-4A65-B8D9-C79ADF59BB8C\",\"lastInstalled\":\"2023-10-25T15:54:56.944Z\",\"removable\":false,\"uuid\":\"7CD7A6A7-590F-4A65-B8D9-C79ADF59BB8C\",\"version\":\"1\"}]"
+    },
+    {
+      "name": "SNAPSHOT_TIME",
+      "type": "TIMESTAMP_TZ",
+      "description": "Timestamp of the latest data pull from MDM services.",
+      "sample": "2025-04-25 00:32:47.455 -0700"
+    },
+    {
+      "name": "TIMEZONE",
+      "type": "TIMESTAMP_TZ",
+      "description": "Timezone currently assigned to the device.",
+      "sample": "Europe/Paris"
+    },
+    {
+      "name": "OS_STATUS",
+      "type": "ENUM",
+      "description": "Health status of the device's OS version.",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "OFFLINE_STATUS",
+      "type": "ENUM",
+      "description": "Online/offline status of the device.",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "CERTIFICATE_STATUS",
+      "type": "ENUM",
+      "description": "Certificate health status, reflecting if any certificate has expired.",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "CERTIFICATES",
+      "type": "ARRAY<JSON>",
+      "description": "List of installed certificates. Each JSON object may contain: `commonName`, `expirationDate`, `identity`, `status` (e.g., HEALTHY).",
+      "sample": "[{\"commonName\":\"KIKO MILANO JSS Built-in Certificate Authority\",\"expirationDate\":\"2033-03-01T12:02:35Z\",\"identity\":false,\"status\":\"HEALTHY\"},{\"commonName\":\"C0C08891-6D99-4737-B122-6EFF206D1C8D\",\"expirationDate\":\"2025-10-25T15:54:22Z\",\"identity\":true,\"status\":\"HEALTHY\"}]"
+    },
+    {
+      "name": "EXPIRED_CERTIFICATES",
+      "type": "ARRAY<JSON>",
+      "description": "Count or number of expired certificates on the device.",
+      "sample": "[]"
+    },
+    {
+      "name": "APPLICATION_STATUS",
+      "type": "ENUM",
+      "description": "Certificate health status, reflecting if any application is outdated`.",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "APPLICATIONS",
+      "type": "ARRAY<JSON>",
+      "description": "List of installed applications. Each JSON object may contain: `name`, `version`, `identifier`, `IS_KEY_APP`, `IS_OUTDATED`, `status`.",
+      "sample": "[{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.beyond.public.tasks\",\"latestVersion\":\"1.92.0\",\"managementStatus\":\"Managed\",\"name\":\"Tasks\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.8.2\"},{\"IS_KEY_APP\":false,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"com.workjam.workjam\",\"latestVersion\":\"2024.6.6\",\"managementStatus\":\"Managed\",\"name\":\"WorkJam\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2025.4.12\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.main.public.sales\",\"latestVersion\":\"1.90.2\",\"managementStatus\":\"Managed\",\"name\":\"Checkout\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.6.3\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"com.streamlinedigital.ielevate\",\"latestVersion\":\"1.0.42\",\"managementStatus\":\"Managed\",\"name\":\"iElevate\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"1.0.42\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.main.public.tasks\",\"latestVersion\":\"1.90.2\",\"managementStatus\":\"Managed\",\"name\":\"Tasks\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.4.4\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.main.public.customers\",\"latestVersion\":\"1.90.2\",\"managementStatus\":\"Managed\",\"name\":\"Loyalty\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.4.4\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.beyond.public.customers\",\"latestVersion\":\"1.92.0\",\"managementStatus\":\"Managed\",\"name\":\"Loyalty\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.8.2\"},{\"IS_KEY_APP\":true,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"global.newblack.eva.beyond.public.sales\",\"latestVersion\":\"1.92.0\",\"managementStatus\":\"Managed\",\"name\":\"Checkout\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"2.8.2\"},{\"IS_KEY_APP\":false,\"currentVersionIndicator\":\"HEALTHY\",\"identifier\":\"com.jamfsoftware.selfservice\",\"latestVersion\":\"11.3.2\",\"managementStatus\":\"Managed\",\"name\":\"Self Service\",\"previousIndicator\":\"HEALTHY\",\"status\":\"HEALTHY\",\"validationStatus\":true,\"version\":\"11.3.2\"}]"
+    },
+    {
+      "name": "DEVICE_HEALTH_STATUS",
+      "type": "ENUM",
+      "description": "Overall device health derived from certificates, applications, OS versions, and other parameters.",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "DEVICEID",
+      "type": "NUMBER",
+      "description": "Unique auto-incremented identifier for the device record.",
+      "sample": 66862141
+    },
+    {
+      "name": "BATTERY_STATUS",
+      "type": "ENUM",
+      "description": "Battery health status, reflecting when battery percentage below the threshold",
+      "sample": "HEALTHY"
+    },
+    {
+      "name": "DEVICE_RAW_SNAPSHOTTIME",
+      "type": "TIMESTAMP_TZ",
+      "description": "Raw timestamp when the snapshot was taken from the MDM system.",
+      "sample": "2025-04-25 07:30:23.343 Z"
+    },
+    {
+      "name": "EXPIREDCERTCOUNT",
+      "type": "NUMBER",
+      "description": "Number of expired certificates.",
+      "sample": 0
+    },
+    {
+      "name": "OUTDATEDAPPSCOUNT",
+      "type": "TIMESTAMP_TZ",
+      "description": "Number of outdated applications.",
+      "sample": 0
+    },
+    {
+      "name": "DEVICE_HEALTH_STATUS_REASONS",
+      "type": "ENUM",
+      "description": "Reasons why the device is flagged as unhealthy.",
+      "sample": "{\"reasonCode\":0,\"issueReasons\":{\"isAppIssue\":\"HEALTHY\",\"isPreviousAppIssue\":0,\"isKeyAppIssue\":0,\"isPreviousKeyAppIssue\":0,\"isNonKeyAppIssue\":0,\"isPreviousNonKeyAppIssue\":0,\"currentOSVersion\":\"18.3.1\",\"currentOSTheshold\":\"17.5\",\"previousOSVersionTheshold\":\"17\",\"hoursLimit\":\"23\",\"reasons\":{\"hourlyLimitStatus\":0,\"isKeyAppIssue\":0}},\"enable_atrisk\":0}"
+    },
+    {
+      "name": "STORE_NAME",
+      "type": "STRING",
+      "description": "Full name of the store to which the device is assigned.",
+      "sample": "FR0704 - RENNES - SM - Colombia"
+    },
+    
+    {
+      "name": "DEVICE_TYPE",
+      "type": "STRING",
+      "description": "DEVICE_TYPE is Device Type.",
+      "sample": "IPHONE"
+    },
+    {
+      "name": "DEVICE_REASON_CODES",
+      "type": "STRING",
+      "description": "Reason Code when device is not healthy.",
+      "sample": "[]"
+    },
+    {
+      "name": "IS_KEY_APP_OUTDATED",
+      "type": "TIMESTAMP_TZ",
+      "description": "Boolean flag indicating whether any key application is outdated.",
+      "sample": 0
+    },
+    {
+      "name": "TYPE_WITH_UPPERCASE",
+      "type": "STRING",
+      "description": "Auto-generated description for column `TYPE_WITH_UPPERCASE`.",
+      "sample": "COMPANION"
+    }
+  ]
+}

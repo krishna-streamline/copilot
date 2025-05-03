@@ -1,0 +1,32 @@
+[
+    {
+        "category": "Devices",
+        "subcategory": "Battery Health",
+        "prompt": "Find devices with battery below 20%"
+    },
+    {
+        "category": "Devices",
+        "subcategory": "OS Compliance",
+        "prompt": "List devices where OS is outdated"
+    },
+    {
+        "category": "Devices",
+        "subcategory": "Offline Detection",
+        "prompt": "List devices offline for more than 7 days"
+    },
+    {
+        "category": "Devices",
+        "subcategory": "App Compliance",
+        "prompt": "Find devices where Slack app is outdated"
+      },
+      {
+        "category": "Devices",
+        "subcategory": "Health Status",
+        "prompt": "List devices with critical health status"
+      },
+      {
+        "category": "Devices",
+        "subcategory": "Anomaly Detection",
+        "prompt": "Find devices with more than 10 outdated applications"
+      }
+]

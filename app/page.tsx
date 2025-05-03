@@ -1,103 +1,148 @@
-import Image from "next/image";
+"use client";
+
+import { Card } from "@/components/ui/card";
+
+import { PenLine, Newspaper, Plane, Sparkles, FileStack, Code } from "lucide-react";
+import ChatInput from "@/components/page-components/ChatInput";
+
+import ChatHeader from "@/components/page-components/ChatHeader";
+import MessageBubble from "@/components/page-components/MessageBubble";
+import mostUsedPrompts from '@/components/data/most_imp_prompts.json'
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge"
+type Message = {
+  role: "user" | "assistant";
+  text: string;
+};
+const initialMessages: Message[] = [];
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [message, setMessage] = useState('')
+  const [title, setTitle] = useState('New Chat')
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [inProgress, setInProgress] = useState(false)
+  const [response, setResponse] = useState<any>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") || "";
+  const chatId = searchParams.get("chat_id") || "";
+  const store = searchParams.get("store") || "";
+  const deviceSerialNo = searchParams.get("deviceSerialNo") || "";
+  useEffect(()=>{
+    localStorage.setItem('auth_token', token)
+    if(!token){
+      router.replace("/401"); // 👈 Redirect if no token
+    }
+  },[token,router])
+  useEffect(()=>{
+    console.log(message)
+  },[message])
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+  
+    const newMessage: Message = { role: "user", text };
+    setMessages((prev) => [...prev, newMessage]);
+    setMessage("");
+    try {
+      const res = await fetch('/api/copilots/chats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setResponse(data);
+        console.log('Chat Created:', data);
+        const chatId = data.chat_id;
+        const fetchData = async () => {
+         
+          try {
+            const res = await fetch(`/api/generate-sql?chat_id=${chatId}`);
+            const data = await res.json();
+            if (res.ok) {
+             
+            } else {
+              setError(data.error || 'Failed to generate SQL');
+            }
+          } catch (err: any) {
+            
+          } finally {
+            
+          }
+        };
+        fetchData();
+      } else {
+        console.error('API error:', data);
+        alert(data.error || 'Something went wrong');
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      alert('Server error');
+    }
+
+    // Simulate bot reply
+    const botReply: Message = {
+      role: "assistant",
+      text: `Echo: ${text}`,
+    };
+  
+    setTimeout(() => {
+      setMessages((prev) => [...prev, botReply]);
+    }, 600);
+  };
+  
+  return (
+   
+    
+    <div className="flex-1 flex flex-col overflow-hidden">
+      <ChatHeader send={setMessage} title={title} />
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center">
+  {/* Chat Messages */}
+  <div className="w-full max-w-3xl flex flex-col space-y-2">
+  {messages.length > 0 && messages.map((msg, idx) => (
+  <div key={idx} className="flex flex-col">
+    <MessageBubble role={msg.role} text={msg.text} />
+  </div>
+))}
+
+  </div>
+
+  {/* Most Used Prompts */}
+  <div className="w-full max-w-6xl mt-10">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {!messages.length && mostUsedPrompts.map((prompt, index) => (
+        <Card key={index} className="border border-gray-300 p-4 hover:shadow-md cursor-pointer" onClick={() => {  setMessage(prompt?.prompt) }}>
+        <div className="flex flex-col space-y-2">
+          <h2 className="font-semibold">{prompt.category}</h2>
+          <Badge variant="outline">{prompt.subcategory}</Badge>
+          <p className="text-sm text-gray-600">{prompt.prompt}</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </Card>
+      ))}
     </div>
+  </div>
+</div>
+
+
+      {/* Chat Input at Bottom */}
+      <ChatInput message={message} handleSend={handleSend} inProgress={inProgress} setInProgress={setInProgress} />
+    </div>
+  
+
+
+    
   );
 }

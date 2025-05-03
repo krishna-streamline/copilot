@@ -1,0 +1,103 @@
+{
+  "table_name": "MAIN_DEVICES",
+  "description": "Stores telemetry data from Jamf-managed Apple devices. Data is updated every 30 minutes.",
+  "latest_snapshot_rule": "WHERE SNAPSHOT_TIME = (SELECT MAX(SNAPSHOT_TIME) FROM MAIN_DEVICES)",
+  "aggregate_columns": [
+    {
+        "name": "COUNTRYID",
+        "type": "STRING",
+        "description": "Country ID of the store where the device is assigned.",
+        "sample": "FR"
+      },
+      {
+        "name": "CITY",
+        "type": "STRING",
+        "description": "City in the country where the store is located.",
+        "sample": "Rennes"
+      },
+      {
+        "name": "OSVERSION",
+        "type": "STRING",
+        "description": "OS version installed on the device.",
+        "sample": "18.3.1"
+      },
+      {
+        "name": "MODEL",
+        "type": "STRING",
+        "description": "Device model (e.g., iPhone 13).",
+        "sample": "iPhone 13"
+      },
+      {
+        "name": "BATTERYLEVEL",
+        "type": "NUMBER",
+        "description": "Battery percentage of the device.",
+        "sample": 100
+      },
+      {
+        "name": "STORE",
+        "type": "NUMBER",
+        "description": "Store number where the device is allocated.",
+        "sample": 704
+      },
+      {
+        "name": "TYPE",
+        "type": "STRING",
+        "description": "Type of device (e.g., POS, CFD, Companion, Spare) as defined in the MDM provider.",
+        "sample": "COMPANION"
+      },
+     {
+        "name": "OS_STATUS",
+        "type": "ENUM",
+        "description": "Health status of the device's OS version.",
+        "sample": "HEALTHY"
+      },
+      {
+        "name": "OFFLINE_STATUS",
+        "type": "ENUM",
+        "description": "Online/offline status of the device.",
+        "sample": "HEALTHY"
+      },
+      {
+        "name": "CERTIFICATE_STATUS",
+        "type": "ENUM",
+        "description": "Certificate health status, reflecting if any certificate has expired.",
+        "sample": "HEALTHY"
+      },
+      {
+        "name": "EXPIRED_CERTIFICATES",
+        "type": "ARRAY<JSON>",
+        "description": "Count or number of expired certificates on the device.",
+        "sample": "[]"
+      },
+      {
+        "name": "APPLICATION_STATUS",
+        "type": "ENUM",
+        "description": "Certificate health status, reflecting if any application is outdated.",
+        "sample": "HEALTHY"
+      },
+      {
+        "name": "DEVICE_HEALTH_STATUS",
+        "type": "ENUM",
+        "description": "Overall device health derived from certificates, applications, OS versions, and other parameters.",
+        "sample": "HEALTHY"
+      },
+      {
+        "name": "BATTERY_STATUS",
+        "type": "ENUM",
+        "description": "Battery health status, reflecting when battery percentage below the threshold",
+        "sample": "HEALTHY"
+      },
+  {
+        "name": "EXPIREDCERTCOUNT",
+        "type": "NUMBER",
+        "description": "Number of expired certificates.",
+        "sample": 0
+      },
+      {
+        "name": "OUTDATEDAPPSCOUNT",
+        "type": "TIMESTAMP_TZ",
+        "description": "Number of outdated applications.",
+        "sample": 0
+      }
+  ]
+}

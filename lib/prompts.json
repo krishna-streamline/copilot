@@ -1,0 +1,298 @@
+[
+    {
+      "category": "Devices",
+      "subcategory": "Battery Health",
+      "prompt": "Find devices with battery below 20%"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Battery Health",
+      "prompt": "Find devices with critical battery status"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Battery Health",
+      "prompt": "List devices with good battery status"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "OS Compliance",
+      "prompt": "List devices where OS is outdated"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "OS Compliance",
+      "prompt": "Find devices running OS version below 15.0"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Offline Detection",
+      "prompt": "List devices offline for more than 7 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Offline Detection",
+      "prompt": "Find devices that have not updated inventory for 30 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "App Compliance",
+      "prompt": "List devices where key application is outdated"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "App Compliance",
+      "prompt": "Find devices where Slack app is outdated"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Certificate Compliance",
+      "prompt": "Find devices with expired VPN Certificates"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Certificate Compliance",
+      "prompt": "List devices with expired certificates"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Lost Mode Tracking",
+      "prompt": "Find all devices that are in Lost Mode"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Lost Mode Tracking",
+      "prompt": "List devices recently put into Lost Mode"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "Find all iPads in Ajman"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "List all iPhones enrolled"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Enrollment and Inventory",
+      "prompt": "Find devices enrolled before 2024"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Enrollment and Inventory",
+      "prompt": "Find devices enrolled in 2025"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Health Status",
+      "prompt": "List devices with critical health status"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Health Status",
+      "prompt": "Find devices with warning health status"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Store/Location Mapping",
+      "prompt": "Find all devices assigned to store 'Ajman City Center'"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Store/Location Mapping",
+      "prompt": "List devices by country code 'AE'"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Time-Based Inactivity",
+      "prompt": "Find devices inactive for more than 90 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Management Status",
+      "prompt": "List all managed devices"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Management Status",
+      "prompt": "Find devices that are not managed"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "Find devices assigned to user 'vamsi'"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Battery Health",
+      "prompt": "Devices with battery between 20% and 50%"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "App Compliance",
+      "prompt": "Devices with more than 5 outdated applications"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Certificate Compliance",
+      "prompt": "Devices with more than 3 expired certificates"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Lost Mode Tracking",
+      "prompt": "List devices put into Lost Mode in last 30 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Battery Health",
+      "prompt": "Find devices with battery above 80%"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "OS Compliance",
+      "prompt": "Find devices running iOS 16.4.1"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Offline Detection",
+      "prompt": "Find devices offline right now"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Certificate Compliance",
+      "prompt": "Find devices where VPN Certificate expires within 30 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "App Compliance",
+      "prompt": "Devices with outdated critical apps"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Health Status",
+      "prompt": "Find healthy devices"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Lost Mode Tracking",
+      "prompt": "Devices enabled Lost Mode but inventory not updated"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "Find devices with model iPhone 13 Pro"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "Find devices with MAC addresses starting with F0:18"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Enrollment and Inventory",
+      "prompt": "Find devices enrolled in the last 7 days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Health Status",
+      "prompt": "Find devices with battery issue reason codes"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "App Compliance",
+      "prompt": "List devices with Zoom app outdated"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Store/Location Mapping",
+      "prompt": "Find devices assigned to Dubai stores"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Management Status",
+      "prompt": "Devices enrolled but not managed"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Management Status",
+      "prompt": "Devices enrolled and managed"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Lost Mode Tracking",
+      "prompt": "Devices enabled Lost Mode within last 24 hours"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "Find devices from environment 'Testing'"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Device Info",
+      "prompt": "List devices by timezone Asia/Dubai"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Certificate Compliance",
+      "prompt": "Find devices with missing certificates"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Enrollment and Inventory",
+      "prompt": "Find devices never updated inventory"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Find devices reporting battery level anomalies (battery dropping below 10%)"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Detect devices offline for more than 15 consecutive days"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Identify devices with high expired certificate count (>5)"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Find devices with more than 10 outdated applications"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "List devices where last inventory update was more than 180 days ago"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Detect devices whose OS build is empty or null"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Find devices having missing WiFi MAC addresses"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Identify devices that have never been managed (MANAGED = FALSE)"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Find devices having multiple anomaly reason codes"
+    },
+    {
+      "category": "Devices",
+      "subcategory": "Anomaly Detection",
+      "prompt": "Detect devices where Lost Mode was enabled but inventory was never updated"
+    }
+  ]
+  
