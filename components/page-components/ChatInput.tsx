@@ -19,9 +19,11 @@ const ChatInput = ({ message, handleSend,inProgress,setInProgress }: ChatInputPr
   useEffect(() => {
     setPromptMessage(message);
   }, [message]);
+  useEffect(() => {
+    //console.log(promptMessage)
+  }, [promptMessage]);
 
   const onSendClick = () => {
-    console.log("Welcome",promptMessage )
     setInProgress(true)
     handleSend(promptMessage); // pass promptMessage to parent
     setPromptMessage(""); // Clear input after sending

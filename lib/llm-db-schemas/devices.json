@@ -168,20 +168,23 @@
     {
       "name": "OS_STATUS",
       "type": "ENUM",
-      "description": "Health status of the device's OS version.",
-      "sample": "HEALTHY"
+      "description": "Health status of the device's OS version. OUTDATED for OS Status means UNHEALTHY",
+      "sample": "HEALTHY",
+      "enum_values": ["HEALTHY", "UNHEALTHY", "AT_RISK"]
     },
     {
       "name": "OFFLINE_STATUS",
       "type": "ENUM",
       "description": "Online/offline status of the device.",
-      "sample": "HEALTHY"
+      "sample": "HEALTHY",
+      "enum_values": ["HEALTHY", "UNHEALTHY", "AT_RISK"]
     },
     {
       "name": "CERTIFICATE_STATUS",
       "type": "ENUM",
       "description": "Certificate health status, reflecting if any certificate has expired.",
-      "sample": "HEALTHY"
+      "sample": "HEALTHY",
+      "enum_values": ["HEALTHY", "UNHEALTHY", "AT_RISK"]
     },
     {
       "name": "CERTIFICATES",
@@ -211,7 +214,8 @@
       "name": "DEVICE_HEALTH_STATUS",
       "type": "ENUM",
       "description": "Overall device health derived from certificates, applications, OS versions, and other parameters.",
-      "sample": "HEALTHY"
+      "sample": "HEALTHY",
+      "enum_values": ["HEALTHY", "UNHEALTHY", "AT_RISK"]
     },
     {
       "name": "DEVICEID",
@@ -223,7 +227,8 @@
       "name": "BATTERY_STATUS",
       "type": "ENUM",
       "description": "Battery health status, reflecting when battery percentage below the threshold",
-      "sample": "HEALTHY"
+      "sample": "HEALTHY",
+      "enum_values": ["HEALTHY", "UNHEALTHY", "AT_RISK"]
     },
     {
       "name": "DEVICE_RAW_SNAPSHOTTIME",
@@ -245,7 +250,7 @@
     },
     {
       "name": "DEVICE_HEALTH_STATUS_REASONS",
-      "type": "ENUM",
+      "type": "STRING",
       "description": "Reasons why the device is flagged as unhealthy.",
       "sample": "{\"reasonCode\":0,\"issueReasons\":{\"isAppIssue\":\"HEALTHY\",\"isPreviousAppIssue\":0,\"isKeyAppIssue\":0,\"isPreviousKeyAppIssue\":0,\"isNonKeyAppIssue\":0,\"isPreviousNonKeyAppIssue\":0,\"currentOSVersion\":\"18.3.1\",\"currentOSTheshold\":\"17.5\",\"previousOSVersionTheshold\":\"17\",\"hoursLimit\":\"23\",\"reasons\":{\"hourlyLimitStatus\":0,\"isKeyAppIssue\":0}},\"enable_atrisk\":0}"
     },

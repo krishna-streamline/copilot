@@ -14,11 +14,20 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge"
 type Message = {
   role: "user" | "assistant";
-  text: string;
+  body: { [key: string]: string | number | boolean };
+  isLoading ? : boolean
 };
 const initialMessages: Message[] = [];
 
-
+const isJsonString = (value: string): boolean => {
+  try {
+    const parsed = JSON.parse(value);
+    // JSON must be an object or array
+    return typeof parsed === 'object' && parsed !== null;
+  } catch {
+    return false;
+  }
+}
 export default function Home() {
   const [message, setMessage] = useState('')
   const [title, setTitle] = useState('New Chat')
@@ -40,15 +49,71 @@ export default function Home() {
     }
   },[token,router])
   useEffect(()=>{
+    if(chatId && chatId.length){
+      try {
+        const fetchChatInfo = async() => {
+          const res = await fetch(`/api/copilots/chats/${chatId}`);
+          const chatInfo = await res.json();
+          if (res.ok) {
+            setTitle(chatInfo.title)
+          }
+        }
+        const fetchChats = async() =>{
+          const res = await fetch(`/api/copilots/chats/${chatId}/messages`);
+        const messagesList = await res.json();
+        if (res.ok) {
+          const messagesListArr= []
+          
+          if(messagesList && messagesList.length){
+            messagesList.forEach(msg => {
+              const customMessage = {}
+              customMessage.role = msg['ROLE']
+              customMessage.body = JSON.parse(msg['MESSAGE'])
+              customMessage.body.id = msg['ID']
+              messagesListArr.push(customMessage)
+            })
+            
+          }
+          setMessages(messagesListArr)
+        } else {
+          
+        }
+        }
+        fetchChatInfo()
+        fetchChats()
+      } catch (err: any) {
+        
+      } finally {
+        
+      }
+    }
+  },[chatId])
+  useEffect(()=>{
     console.log(message)
   },[message])
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
   
-    const newMessage: Message = { role: "user", text };
-    setMessages((prev) => [...prev, newMessage]);
+    const newMessage: Message = { role: "user" };
+    newMessage.body = {}
+    newMessage.body.type = 'text'
+    newMessage.body.text = text;
+    const totalMessages = ([...messages, newMessage]);
+    setMessages(totalMessages);
     setMessage("");
+    // Simulate bot reply
+    const botReply: Message = {
+      role: "assistant",
+      body: {},
+    };
+    botReply.body.type = 'text'
+    botReply.body.isLoading = true
+    botReply.isLoading= true
+  
+    setTimeout(() => {
+      setMessages((prev) => [...prev, botReply]);
+    }, 100);
     try {
       const res = await fetch('/api/copilots/chats', {
         method: 'POST',
@@ -63,15 +128,16 @@ export default function Home() {
 
       if (res.ok) {
         setResponse(data);
-        console.log('Chat Created:', data);
         const chatId = data.chat_id;
+        setTitle(data.title.replaceAll("/",'').replaceAll('"','') || 'New Chat')
         const fetchData = async () => {
          
           try {
             const res = await fetch(`/api/generate-sql?chat_id=${chatId}`);
             const data = await res.json();
             if (res.ok) {
-             
+              const filteredMessages = messages.filter(message => message.isLoading !== true);
+              //setMessages(filteredMessages)
             } else {
               setError(data.error || 'Failed to generate SQL');
             }
@@ -91,15 +157,7 @@ export default function Home() {
       alert('Server error');
     }
 
-    // Simulate bot reply
-    const botReply: Message = {
-      role: "assistant",
-      text: `Echo: ${text}`,
-    };
-  
-    setTimeout(() => {
-      setMessages((prev) => [...prev, botReply]);
-    }, 600);
+    
   };
   
   return (
@@ -114,7 +172,7 @@ export default function Home() {
   <div className="w-full max-w-3xl flex flex-col space-y-2">
   {messages.length > 0 && messages.map((msg, idx) => (
   <div key={idx} className="flex flex-col">
-    <MessageBubble role={msg.role} text={msg.text} />
+    <MessageBubble role={msg.role} body={msg.body} isLoading={inProgress} />
   </div>
 ))}
 

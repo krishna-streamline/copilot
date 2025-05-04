@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Home, MessageCircle, Calendar, Search, Settings,Folder } from "lucide-react";
-
+import { Home, Plus, Calendar, Search, Settings,Folder } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { useSearchParams,useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -32,10 +33,13 @@ type Collection = {
 const ChatSidebar = () => {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") || "";
 
   useEffect(() => {
     const fetchCollections = async () => {
-      const token = localStorage.getItem("auth_token");
       if (!token) return;
 
       try {
@@ -58,7 +62,7 @@ const ChatSidebar = () => {
 
     
     const fetchChats = async () => {
-      const token = localStorage.getItem("auth_token");
+      
       if (!token) return;
 
       const res = await fetch("/api/copilots/chats", {
@@ -78,7 +82,7 @@ const ChatSidebar = () => {
     fetchCollections();
   }, []);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : "";
+
 
   return (
     <Sidebar className="mt-4">
@@ -87,6 +91,10 @@ const ChatSidebar = () => {
           <SidebarGroupLabel>Collections</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+            <ScrollArea className="h-full">
+            {collections.length === 0 ? (
+          <div className="text-gray-500 text-sm pl-4 ">No Collections found</div>
+        ) : null }
               {collections.map((collection) => (
                 <SidebarMenuItem key={collection.id}>
                   <SidebarMenuButton asChild>
@@ -97,23 +105,39 @@ const ChatSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              </ScrollArea>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Chats</SidebarGroupLabel>
+        <div className="flex items-center justify-between">
+    <SidebarGroupLabel>Chats</SidebarGroupLabel>
+    <Plus
+      className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary"
+      onClick={() => {
+        if (token) {
+          router.push(`/?token=${token}`);
+        }
+      }}
+    />
+  </div>
           <SidebarGroupContent>
             <SidebarMenu>
+            <ScrollArea className="h-full">
+            {chats.length === 0 ? (
+          <div className="text-gray-500 text-sm pl-4">No chats found</div>
+        ) : null }
               {chats.map((chat) => (
                 <SidebarMenuItem key={chat.CHAT_ID}>
                   <SidebarMenuButton asChild>
                     <a href={`/?token=${token}&&chat_id=${chat.CHAT_ID}`}>
-                    <MessageCircle />
+                    <Plus />
                       <span>{chat.TITLE.replaceAll('"',"")}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              </ScrollArea>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

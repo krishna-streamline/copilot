@@ -72,11 +72,18 @@ export async function POST(req: NextRequest) {
         });
         translatedMessage = translateResponse.choices[0]?.message?.content?.trim() || message;
       }
-  
+      const messageFormat = {
+        type: 'text',
+        text:message
+      }
+      const translatedMessageFormat = {
+        type: 'text',
+        text:translatedMessage
+      }
       await runQuery(
         `INSERT INTO COPILOTS_CHAT_MESSAGES (CHAT_ID, MESSAGE, TRANSLATE_TO_ENGLISH, ROLE, ORIGINAL_LANGUAGE, RELATED_QUERIES, ERROR) 
          VALUES (?, ?, ?, ?, ?, NULL, NULL)`,
-        [new_chat_id, message, translatedMessage, 'user', detectedLanguage]
+        [new_chat_id, JSON.stringify(messageFormat), JSON.stringify(translatedMessageFormat), 'user', detectedLanguage]
       );
   
       return NextResponse.json({ chat_id: new_chat_id, session_id, title });

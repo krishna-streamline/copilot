@@ -50,3 +50,26 @@ CREATE OR REPLACE TABLE COPILOT_COLLECTIONS (
     UPDATED_AT TIMESTAMP_TZ(9) DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (ID)
 );
+
+
+CREATE TABLE IF NOT EXISTS CHATGPT_API_LOGS (
+    ID NUMBER AUTOINCREMENT PRIMARY KEY,
+    SESSION_ID STRING,                         -- Grouping for conversations
+    USER_ID STRING,                            -- Optional, if tracking users
+    TIMESTAMP TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP,
+    
+    PROMPT_TEXT TEXT,                          -- Full prompt text
+    RESPONSE_TEXT TEXT,                        -- ChatGPT's response
+    MODEL_USED STRING,                         -- e.g., gpt-4, gpt-4o
+    TEMPERATURE FLOAT,                         -- API parameter used
+    MAX_TOKENS NUMBER,                         -- API parameter used
+
+    PROMPT_TOKENS NUMBER,                      -- Tokens used for prompt
+    COMPLETION_TOKENS NUMBER,                  -- Tokens used in response
+    TOTAL_TOKENS NUMBER,                       -- Total tokens used
+
+    API_STATUS STRING,                         -- success/failure
+    ERROR_MESSAGE TEXT,                        -- If API failed
+    LATENCY_MS NUMBER                          -- Time taken to get response
+);
+

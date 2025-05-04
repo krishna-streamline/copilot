@@ -4,7 +4,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { MessageCirclePlus, SquareTerminal } from "lucide-react"; // Assuming you're using lucide-react
 import { useState, useEffect } from "react";
 import prompts from '@/lib/prompts.json';
-
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card";
 
@@ -22,6 +22,7 @@ type ChatHeaderProps = {
 };
 const categories = ["All", ...new Set(prompts.map(p => p.category))];
 const ChatHeader = ({ title, send }: ChatHeaderProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSubcategory, setSelectedSubcategory] = useState("All");
@@ -36,8 +37,11 @@ const ChatHeader = ({ title, send }: ChatHeaderProps) => {
     return matchCategory && matchSubcategory;
   });
   const handleMessageClick = () => {
-    
-    // Add your action here (e.g., open a new chat window)
+    const token = localStorage.getItem('auth_token')
+    if (token) {
+      router.push(`/?token=${token}`);
+    }
+   
   };
   
   
