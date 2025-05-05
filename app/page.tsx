@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge"
 type Message = {
+  id:number,
+  chat_id:string,
   role: "user" | "assistant";
   body: { [key: string]: string | number | boolean };
   isLoading ? : boolean
@@ -69,7 +71,8 @@ export default function Home() {
               const customMessage = {}
               customMessage.role = msg['ROLE']
               customMessage.body = JSON.parse(msg['MESSAGE'])
-              customMessage.body.id = msg['ID']
+              customMessage.id = msg['ID']
+              customMessage.chat_id = chatId
               messagesListArr.push(customMessage)
             })
             
@@ -172,7 +175,7 @@ export default function Home() {
   <div className="w-full max-w-3xl flex flex-col space-y-2">
   {messages.length > 0 && messages.map((msg, idx) => (
   <div key={idx} className="flex flex-col">
-    <MessageBubble role={msg.role} body={msg.body} isLoading={inProgress} />
+    <MessageBubble id={msg.id} chat_id={msg.chat_id} role={msg.role} body={msg.body} isLoading={inProgress} />
   </div>
 ))}
 

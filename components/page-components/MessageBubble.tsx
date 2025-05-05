@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { User, Bot } from "lucide-react"; // Lucide icons
 import LoadingCard from "./LoadingCard";
+import ExpandViewDialog from "./ExpandViewDialog"
 import { useState } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,9 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 type MessageProps = {
-  
+  id?:number
+  chat_id?:string
   role: "user" | "assistant";
-  messageContent: { [key: string]: string | number | boolean };
+  body: { [key: string]: string | number | boolean };
   isLoading ? : boolean
 };
 function isJsonString(value: string): boolean {
@@ -27,7 +29,7 @@ function isJsonString(value: string): boolean {
   }
 }
 
-const MessageBubble = ({ role, body }: MessageProps) => {
+const MessageBubble = ({ id, chat_id, role, body }: MessageProps) => {
   const [open, setOpen] = useState(false);
   const messageContent = isJsonString(body) ? JSON.parse(body) : body
   const isUser = role === "user";
@@ -65,7 +67,7 @@ const MessageBubble = ({ role, body }: MessageProps) => {
   
   {(messageContent?.type === 'Expand_View' || messageContent?.type === 'Table_View') && (
     <Card className="w-full max-w-sm shadow-lg rounded-2xl overflow-hidden">
-    <div className="relative h-48 w-full">
+    <div className="relative h-32 w-full">
       <Image
         src="/monitor.png"
         alt="Sample Image"
@@ -91,17 +93,8 @@ const MessageBubble = ({ role, body }: MessageProps) => {
           <User className="h-5 w-5 text-white" />
         </div>
       )}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="!max-w-none !w-screen !h-screen p-0 overflow-hidden">
-          
-        <DialogTitle className="text-lg font-semibold px-4 pt-4">Expanded View</DialogTitle>
-          {/* Fullscreen Image */}
-          <div className="relative w-full h-full">
-            
-          </div>
-        </DialogContent>
-      </Dialog>
-
+      
+      <ExpandViewDialog id={id} chat_id={chat_id} open={open} setOpen={setOpen} />
     </div>
   );
 };
