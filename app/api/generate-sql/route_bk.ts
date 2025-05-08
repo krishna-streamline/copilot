@@ -65,7 +65,7 @@ Respond only with the JSON array.
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const chatId = searchParams.get('chat_id');
-  let response = {
+  const response = {
     "role":"assistant",
     "keyMetricsQueries":[],
     "summary":""

@@ -195,7 +195,7 @@ Respond with only the JSON array.
           : rawKeyMetricsResponse;
         
         response.keyMetricsQueries = Array.isArray(parsed) ? parsed : [];
-        let message = {}
+        const message = {}
         postData['QUERIES'] = baseQuery
         postData['RELATED_QUERIES'] = JSON.stringify(response.keyMetricsQueries);
         if(!queryResult.length){

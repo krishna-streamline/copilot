@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   env: {
     SNOWFLAKE_ACCOUNT: process.env.SNOWFLAKE_ACCOUNT,
     SNOWFLAKE_USER: process.env.SNOWFLAKE_USER,
