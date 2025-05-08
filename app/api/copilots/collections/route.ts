@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {  runQuery } from '@/lib/snowflake';
-
+import { randomUUID } from 'crypto';
 const CollectionSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
@@ -37,35 +37,79 @@ export async function GET(req: NextRequest) {
     //disconnectSnowflake();
   }
 }
-
+const CreateCollectionSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  chat_id: z.string(),
+  message_id: z.number(),
+});
 export async function POST(req: NextRequest) {
   const token = req.headers.get('authorization')?.replace('Bearer ', '');
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const parsed = CollectionSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  const parsed = CreateCollectionSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
+
+  const { chat_id, message_id, title, description } = parsed.data;
 
   try {
-    //await connectSnowflake();
+    // Step 1: Authenticate User
     const user = await runQuery<{ USER_ID: string }>(
       `SELECT USER_ID FROM COPILOT_AUTHENTICATION_TOKENS WHERE TOKEN = ? AND EXPIRES > CURRENT_TIMESTAMP()`,
       [token]
     );
-    if (!user.length) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    if (!user.length) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+    const user_id = user[0].USER_ID;
 
-    await runQuery(
-      `INSERT INTO COPILOT_COLLECTIONS (USER_ID, TITLE, DESCRIPTION) VALUES (?, ?, ?)`,
-      [user[0].USER_ID, parsed.data.title, parsed.data.description || null]
+    // Step 2: Fetch message data
+    const message = await runQuery<{
+      QUERIES: string;
+      RELATED_QUERIES: string;
+    }>(
+      `SELECT QUERIES, RELATED_QUERIES FROM COPILOTS_CHAT_MESSAGES WHERE CHAT_ID = ? AND ID = ?`,
+      [chat_id.toString(), message_id]
     );
-    return NextResponse.json({ success: true });
+    console.log("message",message)
+    if (!message.length) {
+      return NextResponse.json({ error: 'Message not found' }, { status: 404 });
+    }
+
+    const messageContent = {
+      queries: message[0].QUERIES,
+      related_queries: message[0].RELATED_QUERIES,
+    };
+    const collectionId = randomUUID();
+    // Step 3: Insert into COPILOT_COLLECTIONS
+await runQuery(
+  `INSERT INTO COPILOT_COLLECTIONS (ID,USER_ID, TITLE, DESCRIPTION, CHAT_ID, MESSAGE_ID, MESSAGE_CONTENT)
+   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+  [collectionId,user_id, title, description || null, chat_id, message_id, JSON.stringify(messageContent)]
+);
+
+
+
+    if (!collectionId) {
+      return NextResponse.json({ error: 'Collection insert failed' }, { status: 500 });
+    }
+
+    // Step 4: Update COPILOTS_CHAT_MESSAGES to reference collection
+    await runQuery(
+      `UPDATE COPILOTS_CHAT_MESSAGES SET COLLECTION_ID = ? WHERE ID = ? AND CHAT_ID = ?`,
+      [collectionId, message_id, chat_id.toString()]
+    );
+
+    return NextResponse.json({ success: true, collection_id: collectionId, title:title });
   } catch (err) {
-    console.error('POST collection error:', err);
+    console.error('POST /collections error:', JSON.stringify(err));
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
-  } finally {
-    //disconnectSnowflake();
   }
 }
+
 
 export async function PUT(req: NextRequest) {
   const token = req.headers.get('authorization')?.replace('Bearer ', '');

@@ -1,8 +1,8 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-
-import { PenLine, Newspaper, Plane, Sparkles, FileStack, Code } from "lucide-react";
+import { useSetAtom } from 'jotai';
+import { refreshCounterAtom } from '@/lib/atoms/refreshCounter';
 import ChatInput from "@/components/page-components/ChatInput";
 
 import ChatHeader from "@/components/page-components/ChatHeader";
@@ -31,18 +31,22 @@ const isJsonString = (value: string): boolean => {
   }
 }
 export default function Home() {
-  const [message, setMessage] = useState('')
-  const [title, setTitle] = useState('New Chat')
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [inProgress, setInProgress] = useState(false)
-  const [response, setResponse] = useState<any>(null);
-
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const chatId = searchParams.get("chat_id") || "";
   const store = searchParams.get("store") || "";
+  const [message, setMessage] = useState('')
+  const [title, setTitle] = useState('New Chat')
+  const incrementRefreshCounter = useSetAtom(refreshCounterAtom);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [inProgress, setInProgress] = useState(false)
+  const [selectedChatId, setSelectedChatId] = useState(chatId)
+  const [refreshChatMessage, setRefreshChatMessage] = useState(0)
+  const [response, setResponse] = useState<any>(null);
+
+  
   const deviceSerialNo = searchParams.get("deviceSerialNo") || "";
   useEffect(()=>{
     localStorage.setItem('auth_token', token)
@@ -60,30 +64,9 @@ export default function Home() {
             setTitle(chatInfo.title)
           }
         }
-        const fetchChats = async() =>{
-          const res = await fetch(`/api/copilots/chats/${chatId}/messages`);
-        const messagesList = await res.json();
-        if (res.ok) {
-          const messagesListArr= []
-          
-          if(messagesList && messagesList.length){
-            messagesList.forEach(msg => {
-              const customMessage = {}
-              customMessage.role = msg['ROLE']
-              customMessage.body = JSON.parse(msg['MESSAGE'])
-              customMessage.id = msg['ID']
-              customMessage.chat_id = chatId
-              messagesListArr.push(customMessage)
-            })
-            
-          }
-          setMessages(messagesListArr)
-        } else {
-          
-        }
-        }
+        
         fetchChatInfo()
-        fetchChats()
+        
       } catch (err: any) {
         
       } finally {
@@ -91,10 +74,55 @@ export default function Home() {
       }
     }
   },[chatId])
+  useEffect(() => {
+    const fetchChats = async() =>{
+      const res = await fetch(`/api/copilots/chats/${selectedChatId}/messages`);
+    const messagesList = await res.json();
+    if (res.ok) {
+      const messagesListArr= []
+      
+      if(messagesList && messagesList.length){
+        messagesList.forEach(msg => {
+          const customMessage = {}
+          customMessage.role = msg['ROLE']
+          customMessage.body = JSON.parse(msg['MESSAGE'])
+          customMessage.id = msg['ID']
+          customMessage.chat_id = chatId
+          messagesListArr.push(customMessage)
+        })
+        
+      }
+      setMessages(messagesListArr)
+    } else {
+      
+    }
+    }
+    if(selectedChatId && selectedChatId.length){
+    fetchChats()
+    }
+  },[selectedChatId, refreshChatMessage])
   useEffect(()=>{
     console.log(message)
   },[message])
+  const generateSqlString = async (chatId) => {
+         
+    try {
+      const res = await fetch(`/api/generate-sql?chat_id=${chatId}&&store_id=${store}`);
+      const data = await res.json();
+      if (res.ok) {
+        setSelectedChatId(data['CHAT_ID'])
+        setRefreshChatMessage(prev => prev + 1);
+        setInProgress(false)
 
+      } else {
+        setError(data.error || 'Failed to generate SQL');
+      }
+    } catch (err: any) {
+      
+    } finally {
+      
+    }
+  };
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
   
@@ -124,7 +152,7 @@ export default function Home() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message:text }),
       });
 
       const data = await res.json();
@@ -133,24 +161,9 @@ export default function Home() {
         setResponse(data);
         const chatId = data.chat_id;
         setTitle(data.title.replaceAll("/",'').replaceAll('"','') || 'New Chat')
-        const fetchData = async () => {
-         
-          try {
-            const res = await fetch(`/api/generate-sql?chat_id=${chatId}`);
-            const data = await res.json();
-            if (res.ok) {
-              const filteredMessages = messages.filter(message => message.isLoading !== true);
-              //setMessages(filteredMessages)
-            } else {
-              setError(data.error || 'Failed to generate SQL');
-            }
-          } catch (err: any) {
-            
-          } finally {
-            
-          }
-        };
-        fetchData();
+        incrementRefreshCounter((prev) => prev + 1);
+        
+        generateSqlString(chatId);
       } else {
         console.error('API error:', data);
         alert(data.error || 'Something went wrong');

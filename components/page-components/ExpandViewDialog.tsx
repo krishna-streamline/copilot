@@ -118,13 +118,23 @@ type MetricCardProps = {
         <MetricMultiView key={idx} metric={metric} />
       ))}
     </div>
-
-    <DynamicDataTable
+    {
+      (loading) ? (
+          <Card className="p-4 text-center text-gray-500 italic">
+            Loading ...
+          </Card>
+        
+      ):
+      (
+        <DynamicDataTable
       title="Title"
       description="Description"
       data={data?.queries?.main_query || []}
       columnsMeta={columnsMeta}
     />
+      )
+    }
+    
   </div>
 </DrawerContent>
 

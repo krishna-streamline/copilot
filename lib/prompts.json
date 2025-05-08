@@ -42,7 +42,7 @@
     {
       "category": "Devices",
       "subcategory": "App Compliance",
-      "prompt": "Find devices where Slack app is outdated"
+      "prompt": "Find devices where iElevate app is outdated"
     },
     {
       "category": "Devices",

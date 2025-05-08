@@ -6,9 +6,6 @@ const openai = new OpenAI({
 });
 
 export const llmService = {
-  /**
-   * Calls OpenAI's Chat API and logs the result in Snowflake LLM_API_LOGS table
-   */
   async chat({
     sessionId,
     userId,
@@ -23,9 +20,10 @@ export const llmService = {
     model?: string;
     temperature?: number;
     max_tokens?: number;
-  }): Promise<string> {
+  }): Promise<{ explanation: string; data_query: string }> {
     const start = Date.now();
     let responseText = '';
+    let parsedResponse: { explanation: string; data_query: string } = { explanation: '', data_query: '' };
     let status: 'success' | 'failure' = 'success';
     let errorMessage = '';
     let usage = {
@@ -45,8 +43,19 @@ export const llmService = {
         max_tokens
       });
 
-      responseText = (response.choices?.[0]?.message?.content?.trim() || '').replaceAll('\n',' ');
+      responseText = response.choices?.[0]?.message?.content?.trim() || '';
       usage = response.usage ?? usage;
+
+      try {
+        parsedResponse = JSON.parse(responseText);
+
+        // Optional validation
+        if (!parsedResponse.explanation || !parsedResponse.data_query) {
+          throw new Error('Missing required fields in the LLM response.');
+        }
+      } catch (jsonErr) {
+        throw new Error(`Failed to parse JSON from LLM: ${jsonErr.message}`);
+      }
     } catch (err: any) {
       console.error('[LLM ERROR]', err);
       status = 'failure';
@@ -89,20 +98,14 @@ export const llmService = {
       throw new Error(errorMessage);
     }
 
-    return responseText;
+    return parsedResponse;
   },
 
-  /**
-   * Wrapper for key metric generation using LLM
-   */
-  async generateKeyMetrics(prompt: string, sessionId: string, userId?: string): Promise<string> {
+  async generateKeyMetrics(prompt: string, sessionId: string, userId?: string) {
     return await this.chat({ sessionId, userId, prompt, model: 'gpt-4', temperature: 0.4 });
   },
 
-  /**
-   * Wrapper for SQL generation using LLM
-   */
-  async generateSQLQuery(schemaPrompt: string, messages: { role: string; content: string }[], sessionId = 'default-session', userId?: string): Promise<string> {
+  async generateSQLQuery(schemaPrompt: string, messages: { role: string; content: string }[], sessionId = 'default-session', userId?: string) {
     const combinedPrompt = `
 ${schemaPrompt}
 

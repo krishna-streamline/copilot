@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useAtom } from 'jotai';
+import { refreshCounterAtom } from '@/lib/atoms/refreshCounter';
 import { useEffect, useState } from "react";
 import { Home, Plus, Calendar, Search, Settings,Folder } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -20,12 +23,7 @@ type ChatItem = {
   TITLE: string;
 };
 
-const staticItems = [
-  { title: "Home", url: "#", icon: Home },
-  { title: "Calendar", url: "#", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
-  { title: "Settings", url: "#", icon: Settings },
-];
+
 type Collection = {
   id: number;
   title: string;
@@ -34,7 +32,7 @@ const ChatSidebar = () => {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const router = useRouter();
-
+  const [refreshCounter] = useAtom(refreshCounterAtom);
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
@@ -73,14 +71,13 @@ const ChatSidebar = () => {
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data)
         setChats(data);
       }
     };
 
     fetchChats();
     fetchCollections();
-  }, []);
+  }, [refreshCounter]);
 
 
 
@@ -96,11 +93,11 @@ const ChatSidebar = () => {
           <div className="text-gray-500 text-sm pl-4 ">No Collections found</div>
         ) : null }
               {collections.map((collection) => (
-                <SidebarMenuItem key={collection.id}>
+                <SidebarMenuItem key={collection.ID}>
                   <SidebarMenuButton asChild>
-                    <a href={`/?collection_id=${collection.id}`}>
+                    <a href={`/collection?token=${token}&&collection_id=${collection.ID}`}>
                       <Folder className="mr-2" />
-                      <span>{collection.title}</span>
+                      <span>{collection.TITLE}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

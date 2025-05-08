@@ -34,9 +34,13 @@ const AddToCollectionButton = ({ chat_id, message_id }: AddToCollectionButtonPro
 
     try {
       setSubmitting(true);
+      const token = localStorage.getItem('auth_token')
       const res = await fetch('/api/copilots/collections', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+         },
         body: JSON.stringify({ ...form, chat_id, message_id }),
       });
 

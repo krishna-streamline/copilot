@@ -53,7 +53,7 @@ const MessageBubble = ({ id, chat_id, role, body }: MessageProps) => {
         className={cn(
           "p-3 rounded-xl max-w-[70%] whitespace-pre-wrap",
           isUser
-            ? "bg-blue-500 text-white"
+            ? "bg-primary text-white"
             : "bg-muted text-black"
         )}
       >
@@ -82,6 +82,9 @@ const MessageBubble = ({ id, chat_id, role, body }: MessageProps) => {
   </Card>
 
   )}
+  {(messageContent?.type === 'no_data') && (
+     <div>{messageContent.text}</div>
+  )}
 </>
 
         
@@ -89,7 +92,7 @@ const MessageBubble = ({ id, chat_id, role, body }: MessageProps) => {
 
       {/* User Icon */}
       {isUser && (
-        <div className="p-2 bg-blue-500 rounded-full">
+        <div className="p-2 bg-primary rounded-full">
           <User className="h-5 w-5 text-white" />
         </div>
       )}

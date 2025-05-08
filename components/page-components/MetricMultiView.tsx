@@ -43,14 +43,16 @@ type ViewType = (typeof viewTypes)[number];
 type MetricMultiViewProps = {
   metric: Metric;
 };
-
+const formatText = (text:string) => {
+  return text.replaceAll("-"," ").replaceAll("_"," ")
+}
 export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
   const { explanation, columns, result } = metric;
   const [view, setView] = useState<ViewType>('table');
 
   if (!result?.length) return null;
 
-  const xKey = Object.keys(result[0])[0];
+  const xKey = formatText(Object.keys(result[0])[0]);
   const yKey = Object.keys(result[0])[1];
 
   return (

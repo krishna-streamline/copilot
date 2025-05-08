@@ -20,11 +20,15 @@ async function getMessagesByChatId(chatId: string) {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const chatId = searchParams.get('chat_id');
+  const currentStore = searchParams.get('store_id');
+
   const postData = {}
   postData['CHAT_ID'] = chatId
   postData['ROLE'] = 'assistant'
   postData['RELATED_QUERIES'] = ''
   postData['QUERIES'] = ''
+  postData['MESSAGE'] = ''
+  postData['TRANSLATE_TO_ENGLISH'] = ''
   const response: {
     role: string;
     baseQuery?: string;
@@ -43,27 +47,39 @@ export async function GET(req: NextRequest) {
   try {
     const messagesFromDB = await getMessagesByChatId(chatId);
     const userMessages = messagesFromDB.filter(msg => msg.role === 'user');
+    const storeFilterContext = currentStore
+  ? `
+📌 CONTEXT:
+A store is already selected in the app interface: STORE = '${currentStore}'.
+Always apply this filter exactly as: STORE = '${currentStore}'.
+Ignore any store filters mentioned by the user.`
+  : '';
+
 
     const schemaContext = `
-You are a Snowflake SQL expert.
+You are a Snowflake SQL expert integrated into an enterprise telemetry reporting system.
 
-🎯 GOAL: Generate a syntactically correct **Snowflake SELECT query** using the table schema and user question.
+🎯 GOAL: Generate a syntactically correct and optimized **Snowflake SELECT query** using the schema and user question, while returning a plain-language explanation for end users.
 
 ⚠️ MANDATORY RULES:
-1. Only generate SELECT queries. ❌ Never use INSERT, UPDATE, DELETE, or DDL statements.
-2. Every query MUST include this condition in the WHERE clause:
+1. ❌ Never generate INSERT, UPDATE, DELETE, or DDL statements. Only SELECT queries are allowed.
+2. Every query MUST include the following condition:
    ${devicesSchema.latest_snapshot_rule}
-3. For columns of type ARRAY<JSON>, use LATERAL FLATTEN to access nested fields.
-4. Do NOT explain the query. Do NOT use markdown formatting.
-5. If the user does not ask for specific columns, default to: SELECT *.
-6. If the user refers to concepts like "OS outdated", "expired certificate", or "offline", map them as:
+3. For columns of type ARRAY<JSON>, always use:
+   \`LATERAL FLATTEN(input => parse_json(d.COLUMN_NAME))\`
+   Never use just \`input => d.COLUMN_NAME\`.
+4. For any string comparisons in WHERE conditions:
+   - Use case-insensitive matching
+   - Prefer \`LOWER(column) = LOWER('value')\` or \`ILIKE '%value%'\` as appropriate
+5. If no specific fields are requested, use \`SELECT *\`
+6. If the user refers to general terms like "OS outdated", "offline", "expired certificates", etc., map them using:
    - OS_STATUS = 'UNHEALTHY'
    - APPLICATION_STATUS = 'UNHEALTHY'
    - CERTIFICATE_STATUS = 'UNHEALTHY'
    - OFFLINE_STATUS = 'UNHEALTHY'
    - "at risk" → 'AT_RISK'
    - "healthy" → 'HEALTHY'
-
+   ${storeFilterContext}
 📄 TABLE: ${devicesSchema.table_name}
 📝 DESCRIPTION: ${devicesSchema.description}
 
@@ -86,7 +102,7 @@ WHERE OS_STATUS = 'UNHEALTHY'
 -- 2. User asks: "Show expired certificates"
 SELECT d.NAME, c.value:commonName::STRING AS common_name, c.value:expirationDate::TIMESTAMP AS expiry_date
 FROM ${devicesSchema.table_name} d,
-     LATERAL FLATTEN(input => d.CERTIFICATES) c
+     LATERAL FLATTEN(input => parse_json(d.CERTIFICATES)) c
 WHERE c.value:status = 'UNHEALTHY'
   AND ${devicesSchema.latest_snapshot_rule};
 
@@ -98,21 +114,31 @@ WHERE OFFLINE_STATUS = 'AT_RISK'
 -- 4. User asks: "List key apps that are outdated"
 SELECT d.NAME, a.value:name::STRING AS app_name, a.value:version::STRING AS installed_version
 FROM ${devicesSchema.table_name} d,
-     LATERAL FLATTEN(input => d.APPLICATIONS) a
+     LATERAL FLATTEN(input => parse_json(d.APPLICATIONS)) a
 WHERE a.value:IS_KEY_APP = true
   AND a.value:status = 'UNHEALTHY'
   AND ${devicesSchema.latest_snapshot_rule};
-  `.trim();
 
+📦 RESPONSE FORMAT:
+Return a valid JSON object in the following format:
+{
+  "explanation": "A simple, human-friendly summary for end users describing what the results contain. Avoid using technical terms like 'query' or 'SQL'.",
+  "data_query": "The actual Snowflake SELECT statement for internal use (not shown to users)."
+}
+`.trim();
 
 
     // Step 1: Generate base query using LLM
-    const baseQuery = await llmService.generateSQLQuery(schemaContext, userMessages);
-    response.baseQuery = baseQuery;
+    const llmOutput = await llmService.generateSQLQuery(schemaContext, userMessages);
+    
 
+    const { data_query, explanation } = llmOutput;
+    const baseQuery = data_query;
+    response.baseQuery = baseQuery;
+    postData['QUERIES'] = baseQuery
     // Step 2: Run base query to validate
     const queryResult = await runQuery(baseQuery);
-
+    
     if (queryResult.length) {
       // Step 3: Construct key metrics prompt
       const keyMetricsPrompt = `
@@ -162,9 +188,6 @@ Respond with only the JSON array.
 
       const rawKeyMetricsResponse = await llmService.generateKeyMetrics(keyMetricsPrompt);
 
-      //console.log("📤 Prompt to LLM:\n", keyMetricsPrompt);
-      //console.log("📥 Raw LLM Response:\n", rawKeyMetricsResponse);
-
       // Step 4: Parse and assign
       try {
         const parsed = typeof rawKeyMetricsResponse === 'string'
@@ -192,6 +215,12 @@ Respond with only the JSON array.
         response.keyMetricsQueries = [];
       }
     }
+    else{
+      postData['TRANSLATE_TO_ENGLISH'] = postData['MESSAGE'] = {
+        "type":"no_data",
+        "text":"No Results Found"
+      }
+    }
 
     
 
@@ -205,7 +234,6 @@ Respond with only the JSON array.
     }
     //return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
-  
   await runQuery(
     `INSERT INTO COPILOTS_CHAT_MESSAGES 
      (CHAT_ID, MESSAGE, TRANSLATE_TO_ENGLISH, ROLE, ORIGINAL_LANGUAGE, QUERIES, RELATED_QUERIES, ERROR) 
