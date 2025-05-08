@@ -1,4 +1,4 @@
-import { connectSnowflake, runQuery, disconnectSnowflake } from '@/lib/snowflake';
+import {  runQuery } from '@/lib/snowflake';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await connectSnowflake();
+    
 
     const query = `
       SELECT USER_INFO
@@ -31,6 +31,6 @@ export async function GET(req: NextRequest) {
     console.error('Snowflake Error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   } finally {
-    disconnectSnowflake();
+    //disconnectSnowflake();
   }
 }
