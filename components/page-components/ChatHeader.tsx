@@ -1,5 +1,6 @@
 "use client";
-
+import { useAtom } from "jotai";
+import { sidebarOpenAtom } from "@/lib/atoms/sidebar";
 import { SidebarTrigger } from "../ui/sidebar";
 import { MessageCirclePlus, SquareTerminal } from "lucide-react"; // Assuming you're using lucide-react
 import { useState, useEffect } from "react";
@@ -32,7 +33,8 @@ const categories = ["All", ...new Set(prompts.map(p => p.category))];
 const ChatHeader = ({ title, send }: ChatHeaderProps) => {
   const { setTheme } = useTheme()
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useAtom(sidebarOpenAtom);
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSubcategory, setSelectedSubcategory] = useState("All");
 

@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     SNOWFLAKE_SCHEMA: process.env.SNOWFLAKE_SCHEMA,
     LLM_KEY: process.env.LLM_KEY,
   },
+  output: 'standalone',
+
 };
 
 export default nextConfig;

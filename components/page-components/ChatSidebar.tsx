@@ -3,8 +3,9 @@
 
 import { useAtom } from 'jotai';
 import { refreshCounterAtom } from '@/lib/atoms/refreshCounter';
+
 import { useEffect, useState } from "react";
-import { Home, Plus,MessagesSquare, Calendar, Search, Settings,Folder } from "lucide-react";
+import { Home, Plus,MessagesSquare, Boxes } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useSearchParams,useRouter } from "next/navigation";
 
@@ -97,7 +98,8 @@ const ChatSidebar = () => {
                 <SidebarMenuItem key={collection.ID}>
                   <SidebarMenuButton asChild>
                     <a href={`/collection?token=${token}&&collection_id=${collection.ID}`}>
-                      <Folder className="mr-2" />
+                      
+                      <Boxes className="mr-2" />
                       <span>{collection.TITLE}</span>
                     </a>
                   </SidebarMenuButton>

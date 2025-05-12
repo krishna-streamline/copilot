@@ -37,7 +37,7 @@ export default function RootLayout({
         disableTransitionOnChange
         >
            <SidebarProvider defaultOpen={false}>
-  <div className="flex h-screen w-full overflow-hidden"> 
+  <div className="flex h-screen w-full"> 
     {/* Sidebar */}
     <div className=" bg-sidebar min-h-full">
       <ChatSidebar />

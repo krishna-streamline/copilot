@@ -63,6 +63,9 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
   return (
     <Card className="rounded-xl border border-gray-200 shadow-sm w-full">
       <CardContent className="p-6 space-y-4">
+        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+
+        
         <div className="flex justify-between items-center">
           <h3 className="text-md font-semibold text-gray-700">{explanation}</h3>
           <Select value={view} onValueChange={(val) => setView(val as ViewType)}>
@@ -219,6 +222,7 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
             </PieChart>
           </ResponsiveContainer>
         )}
+        </div>
       </CardContent>
     </Card>
   );
