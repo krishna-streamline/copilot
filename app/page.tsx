@@ -58,7 +58,7 @@ export default function Home() {
     if(chatId && chatId.length){
       try {
         const fetchChatInfo = async() => {
-          const res = await fetch(`/api/copilots/chats/${chatId}`);
+          const res = await fetch(`/api/copilots/chats/${selectedChatId}`);
           const chatInfo = await res.json();
           if (res.ok) {
             setTitle(chatInfo.title)
@@ -145,6 +145,10 @@ export default function Home() {
     setTimeout(() => {
       setMessages((prev) => [...prev, botReply]);
     }, 100);
+    let body = {message:text}
+    if(selectedChatId){
+     body =  { message:text, chat_id: chatId }
+    }
     try {
       const res = await fetch('/api/copilots/chats', {
         method: 'POST',
@@ -152,7 +156,7 @@ export default function Home() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ message:text }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
@@ -160,6 +164,7 @@ export default function Home() {
       if (res.ok) {
         setResponse(data);
         const chatId = data.chat_id;
+        setSelectedChatId(chatId)
         setTitle(data.title.replaceAll("/",'').replaceAll('"','') || 'New Chat')
         incrementRefreshCounter((prev) => prev + 1);
         
@@ -188,7 +193,7 @@ export default function Home() {
   <div className="w-full max-w-3xl flex flex-col space-y-2">
   {messages.length > 0 && messages.map((msg, idx) => (
   <div key={idx} className="flex flex-col">
-    <MessageBubble id={msg.id} chat_id={msg.chat_id} role={msg.role} body={msg.body} isLoading={inProgress} />
+    <MessageBubble id={msg.id} chat_id={selectedChatId} role={msg.role} body={msg.body} isLoading={inProgress} />
   </div>
 ))}
 

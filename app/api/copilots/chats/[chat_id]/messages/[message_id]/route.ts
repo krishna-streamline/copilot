@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runQuery } from '@/lib/snowflake';
 
+// This is the correct signature for route handlers in App Router
 export async function GET(
   req: NextRequest,
-  { params }: { params: { chat_id: string; message_id: string } }
+  context: { params: { chat_id: string; message_id: string } }
 ) {
-  const { chat_id, message_id } = params;
+  const { chat_id, message_id } = context.params;
 
   try {
-    // Step 1: Fetch the message
     const result = await runQuery(
       `SELECT ID, CHAT_ID, MESSAGE, TRANSLATE_TO_ENGLISH, ROLE, ORIGINAL_LANGUAGE, CREATED_AT, UPDATED_AT, ERROR, QUERIES, RELATED_QUERIES
        FROM COPILOTS_CHAT_MESSAGES
@@ -23,7 +23,6 @@ export async function GET(
     const message = result[0];
     const queryResults: any = {};
 
-    // Step 2: Run QUERIES (if present)
     if (message.QUERIES) {
       try {
         queryResults.main_query = await runQuery(message.QUERIES);
@@ -32,7 +31,6 @@ export async function GET(
       }
     }
 
-    // Step 3: Run RELATED_QUERIES (assume it's a JSON array of SQL strings)
     if (message.RELATED_QUERIES) {
       try {
         const related = JSON.parse(message.RELATED_QUERIES);
@@ -41,9 +39,17 @@ export async function GET(
           for (const sqlData of related) {
             try {
               const res = await runQuery(sqlData.query);
-              queryResults.related_queries.push({ explanation: sqlData.explanation,columns:sqlData.columns, result: res });
+              queryResults.related_queries.push({
+                explanation: sqlData.explanation,
+                columns: sqlData.columns,
+                result: res
+              });
             } catch (err) {
-              queryResults.related_queries.push({ explanation: sqlData.explanation, columns:sqlData.columns, error: `${err}` });
+              queryResults.related_queries.push({
+                explanation: sqlData.explanation,
+                columns: sqlData.columns,
+                error: `${err}`
+              });
             }
           }
         } else {
@@ -54,7 +60,6 @@ export async function GET(
       }
     }
 
-    // Step 4: Send final response
     return NextResponse.json({
       message: {
         ID: message.ID,

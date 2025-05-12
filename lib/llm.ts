@@ -49,10 +49,7 @@ export const llmService = {
       try {
         parsedResponse = JSON.parse(responseText);
 
-        // Optional validation
-        if (!parsedResponse.explanation || !parsedResponse.data_query) {
-          throw new Error('Missing required fields in the LLM response.');
-        }
+        
       } catch (jsonErr) {
         throw new Error(`Failed to parse JSON from LLM: ${jsonErr.message}`);
       }

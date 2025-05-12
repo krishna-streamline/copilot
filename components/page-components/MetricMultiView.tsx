@@ -14,6 +14,7 @@ import {
   Line,
   AreaChart,
   Area,
+  Label,
 } from 'recharts';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -43,25 +44,27 @@ type ViewType = (typeof viewTypes)[number];
 type MetricMultiViewProps = {
   metric: Metric;
 };
-const formatText = (text:string) => {
-  return text.replaceAll("-"," ").replaceAll("_"," ")
-}
+
+const formatText = (text: string) => {
+  return text.replaceAll('-', ' ').replaceAll('_', ' ');
+};
+
 export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
   const { explanation, columns, result } = metric;
   const [view, setView] = useState<ViewType>('table');
 
   if (!result?.length) return null;
 
-  const xKey = formatText(Object.keys(result[0])[0]);
+  const xKey = Object.keys(result[0])[0];
   const yKey = Object.keys(result[0])[1];
+  const formattedXKey = formatText(xKey);
+  const formattedYKey = formatText(yKey);
 
   return (
     <Card className="rounded-xl border border-gray-200 shadow-sm w-full">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-md font-semibold text-gray-700">{explanation}</h3>
-
-          {/* View Selection Dropdown */}
           <Select value={view} onValueChange={(val) => setView(val as ViewType)}>
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Select view" />
@@ -76,7 +79,11 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
           </Select>
         </div>
 
-        {/* Conditional Chart Rendering */}
+        {view !== 'table' && (
+          <h4 className="text-sm font-medium text-gray-600">{formattedXKey} vs {formattedYKey}</h4>
+        )}
+
+        {/* Table View */}
         {view === 'table' && (
           <div className="overflow-x-auto">
             <table className="w-full text-sm border">
@@ -84,7 +91,7 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
                 <tr>
                   {columns.map((col, idx) => (
                     <th key={idx} className="px-4 py-2 border">
-                      {col}
+                      {formatText(col)}
                     </th>
                   ))}
                 </tr>
@@ -104,63 +111,93 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
           </div>
         )}
 
+        {/* Bar Chart */}
         {view === 'bar' && (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={result}>
-              <XAxis dataKey={xKey} />
-              <YAxis />
-              <Tooltip />
+              <XAxis dataKey={xKey} tickFormatter={formatText}>
+                <Label value={formattedXKey} offset={-5} position="insideBottom" />
+              </XAxis>
+              <YAxis>
+                <Label value={formattedYKey} angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
               <Bar dataKey={yKey} fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
         )}
 
+        {/* Horizontal Bar Chart */}
         {view === 'horizontalBar' && (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={result} layout="vertical">
-              <XAxis type="number" />
-              <YAxis type="category" dataKey={xKey} />
-              <Tooltip />
+              <XAxis type="number">
+                <Label value={formattedYKey} position="insideBottom" offset={-5} />
+              </XAxis>
+              <YAxis type="category" dataKey={xKey} tickFormatter={formatText}>
+                <Label value={formattedXKey} angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
               <Bar dataKey={yKey} fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
         )}
 
+        {/* Line Chart */}
         {view === 'line' && (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={result}>
-              <XAxis dataKey={xKey} />
-              <YAxis />
-              <Tooltip />
+              <XAxis dataKey={xKey} tickFormatter={formatText}>
+                <Label value={formattedXKey} offset={-5} position="insideBottom" />
+              </XAxis>
+              <YAxis>
+                <Label value={formattedYKey} angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
               <Line type="monotone" dataKey={yKey} stroke="#8884d8" />
             </LineChart>
           </ResponsiveContainer>
         )}
 
+        {/* Area Chart */}
         {view === 'area' && (
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={result}>
-              <XAxis dataKey={xKey} />
-              <YAxis />
-              <Tooltip />
+              <XAxis dataKey={xKey} tickFormatter={formatText}>
+                <Label value={formattedXKey} offset={-5} position="insideBottom" />
+              </XAxis>
+              <YAxis>
+                <Label value={formattedYKey} angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
               <Area type="monotone" dataKey={yKey} stroke="#8884d8" fill="#82ca9d" />
             </AreaChart>
           </ResponsiveContainer>
         )}
 
+        {/* Pie Chart */}
         {view === 'pie' && (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
-              <Pie data={result} dataKey={yKey} nameKey={xKey} cx="50%" cy="50%" outerRadius={100} label>
+              <Pie
+                data={result}
+                dataKey={yKey}
+                nameKey={xKey}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                label={({ name, value }) => `${formatText(String(name))}: ${value}`}
+              >
                 {result.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
             </PieChart>
           </ResponsiveContainer>
         )}
 
+        {/* Donut Chart */}
         {view === 'donut' && (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -172,13 +209,13 @@ export const MetricMultiView = ({ metric }: MetricMultiViewProps) => {
                 cy="50%"
                 innerRadius={60}
                 outerRadius={100}
-                label
+                label={({ name, value }) => `${formatText(String(name))}: ${value}`}
               >
                 {result.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip formatter={(value, name) => [value, formatText(name)]} />
             </PieChart>
           </ResponsiveContainer>
         )}

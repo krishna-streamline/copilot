@@ -1,19 +1,13 @@
 
   import { Drawer, DrawerContent,DrawerHeader,DrawerTitle,DrawerDescription } from '@/components/ui/drawer';
   import { useEffect, useState } from 'react';
-  import { Card, CardContent,CardDescription,
-    CardHeader,
-    CardTitle } from "@/components/ui/card";
+ import MetricCard from './MetricCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import DynamicDataTable from './DynamicDataTable';
 import { MetricMultiView } from './MetricMultiView';
 import AddToCollectionButton from './AddToCollectionButton';
+ import { Card } from "@/components/ui/card";
 
-type MetricCardProps = {
-    title: string;
-    description: string;
-    value:string
-  }
   type ExpandViewDialogProps = {
     chat_id: string | number;
     id: string | number;
@@ -25,20 +19,7 @@ type MetricCardProps = {
     name: { name: "Full Name", display: true },
     UUID: { name: "uuid", display: false }
   }
-  const MetricCard = ({ title, description,value }: MetricCardProps) => {
-    return (
-      <Card className="rounded-xl border border-gray-200 shadow-sm p-6">
-        <CardHeader className='px-0'>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-        <CardContent className="p-1 text-right">
-          
-          <p className="text-2xl font-semibold text-black mt-2">{value}</p>
-        </CardContent>
-      </Card>
-    );
-  };
+  
   const ExpandViewDialog = ({ chat_id, id, open, setOpen }: ExpandViewDialogProps) => {
     
     const [data, setData] = useState<any>({message:'',queries:[]});
@@ -55,7 +36,6 @@ type MetricCardProps = {
           const singleGrid = []
           const multiGrid = []
           const keyMetrics = json?.queries?.related_queries || []
-          console.log("keyMetrics:",keyMetrics)
           keyMetrics.forEach((metrics) => {
             if (metrics?.columns.length === 1) {
               singleGrid.push(metrics);

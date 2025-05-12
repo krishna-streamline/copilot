@@ -4,9 +4,10 @@
 import { useAtom } from 'jotai';
 import { refreshCounterAtom } from '@/lib/atoms/refreshCounter';
 import { useEffect, useState } from "react";
-import { Home, Plus, Calendar, Search, Settings,Folder } from "lucide-react";
+import { Home, Plus,MessagesSquare, Calendar, Search, Settings,Folder } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useSearchParams,useRouter } from "next/navigation";
+
 import {
   Sidebar,
   SidebarContent,
@@ -128,7 +129,7 @@ const ChatSidebar = () => {
                 <SidebarMenuItem key={chat.CHAT_ID}>
                   <SidebarMenuButton asChild>
                     <a href={`/?token=${token}&&chat_id=${chat.CHAT_ID}`}>
-                    <Plus />
+                    <MessagesSquare />
                       <span>{chat.TITLE.replaceAll('"',"")}</span>
                     </a>
                   </SidebarMenuButton>

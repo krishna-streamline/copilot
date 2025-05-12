@@ -3,6 +3,8 @@
 import { SidebarTrigger } from "../ui/sidebar";
 import { MessageCirclePlus, SquareTerminal } from "lucide-react"; // Assuming you're using lucide-react
 import { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 import prompts from '@/lib/prompts.json';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
@@ -11,6 +13,12 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 type Prompt = {
   category: string;
   subcategory: string;
@@ -22,6 +30,7 @@ type ChatHeaderProps = {
 };
 const categories = ["All", ...new Set(prompts.map(p => p.category))];
 const ChatHeader = ({ title, send }: ChatHeaderProps) => {
+  const { setTheme } = useTheme()
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -59,6 +68,24 @@ const ChatHeader = ({ title, send }: ChatHeaderProps) => {
           className="w-6 h-6 cursor-pointer hover:text-gray-300"
           onClick={handleMessageClick}
         />
+        <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="relative inline-flex items-center justify-center rounded-full text-foreground hover:text-muted-foreground transition-colors focus:outline-none"
+        >
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+    {
+    (send) ? (
         <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <SquareTerminal />
@@ -116,7 +143,9 @@ const ChatHeader = ({ title, send }: ChatHeaderProps) => {
           </div>
           </div>
         </DialogContent>
-      </Dialog>        
+      </Dialog> 
+    ): null 
+  }       
 
       </div>
 
