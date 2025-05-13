@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge"
+import ChatSkeletonLoader from "@/components/page-components/ChatSkeletonLoader";
 type Message = {
   id:number,
   chat_id:string,
@@ -38,11 +39,12 @@ export default function Home() {
   const chatId = searchParams.get("chat_id") || "";
   const store = searchParams.get("store") || "";
   const [message, setMessage] = useState('')
+  const [selectedChatId, setSelectedChatId] = useState(chatId)
   const [title, setTitle] = useState('New Chat')
   const incrementRefreshCounter = useSetAtom(refreshCounterAtom);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inProgress, setInProgress] = useState(false)
-  const [selectedChatId, setSelectedChatId] = useState(chatId)
+  
   const [refreshChatMessage, setRefreshChatMessage] = useState(0)
   const [response, setResponse] = useState<any>(null);
 
@@ -73,7 +75,7 @@ export default function Home() {
         
       }
     }
-  },[chatId])
+  },[selectedChatId])
   useEffect(() => {
     const fetchChats = async() =>{
       const res = await fetch(`/api/copilots/chats/${selectedChatId}/messages`);
@@ -100,14 +102,14 @@ export default function Home() {
     if(selectedChatId && selectedChatId.length){
     fetchChats()
     }
-  },[selectedChatId, refreshChatMessage])
+  },[refreshChatMessage])
   useEffect(()=>{
     console.log(message)
   },[message])
   const generateSqlString = async (chatId) => {
          
     try {
-      const res = await fetch(`/api/generate-sql?chat_id=${chatId}&&store_id=${store}`);
+      const res = await fetch(`/api/generate-chat?chat_id=${chatId}&&store_id=${store}`);
       const data = await res.json();
       if (res.ok) {
         setSelectedChatId(data['CHAT_ID'])
@@ -186,6 +188,13 @@ export default function Home() {
     
     <div className="flex-1 flex flex-col overflow-hidden">
       <ChatHeader send={setMessage} title={title} />
+      {
+        inProgress ? 
+        (
+          <ChatSkeletonLoader />
+        ):
+        (
+          <>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center">
@@ -213,11 +222,15 @@ export default function Home() {
       ))}
     </div>
   </div>
-</div>
+      </div>
+
 
 
       {/* Chat Input at Bottom */}
       <ChatInput message={message} handleSend={handleSend} inProgress={inProgress} setInProgress={setInProgress} />
+          </>
+        )
+      }
     </div>
   
 

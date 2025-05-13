@@ -15,10 +15,31 @@ import AddToCollectionButton from './AddToCollectionButton';
     setOpen: (open: boolean) => void;
   };
   const columnsMeta = {
-    id: { name: "ID" },
-    name: { name: "Full Name", display: true },
-    UUID: { name: "uuid", display: false }
-  }
+  name: {
+    name: 'Full Name',
+    customCell: (value) => <strong className="text-blue-600">{value}</strong>,
+  },
+  status: {
+    name: 'Status',
+    customCell: (value) => (
+      <span className={`px-2 py-1 rounded text-xs ${value === 'active' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+        {value}
+      </span>
+    ),
+  },
+  score: {
+    name: 'Score',
+    customCell: (value) => (
+      <span>
+        {value} {value > 100 && '🔥'}
+      </span>
+    ),
+  },
+  id: {
+    name: 'Identifier',
+    customHeader: () => <span className="uppercase text-purple-600">🔑 ID</span>,
+  },
+};
   
   const ExpandViewDialog = ({ chat_id, id, open, setOpen }: ExpandViewDialogProps) => {
     

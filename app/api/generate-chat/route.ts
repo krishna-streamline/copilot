@@ -248,7 +248,7 @@ Respond with only the JSON array.
     
 
   } catch (error: any) {
-    console.error('[generate-sql] error:', error);
+    console.error('[generate-chat] error:', error);
     postData['ROLE'] = 'assistant'
     postData['ERROR'] = { error: error.message || 'Internal Server Error' }
     postData.message = {

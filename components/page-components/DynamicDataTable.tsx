@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
   ColumnDef,
+  SortingState,
 } from '@tanstack/react-table';
 
 import {
@@ -18,22 +19,28 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Card,CardDescription,
-    CardHeader,
-    CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
 type ColumnMeta = {
   name: string;
   display?: boolean;
+  customHeader?: () => React.ReactNode;
+  customCell?: (value: any, row: any) => React.ReactNode;
 };
 
 type DynamicDataTableProps = {
-  title:string,
-  description:string,
+  title: string;
+  description: string;
   data: Record<string, any>[];
   columnsMeta?: Record<string, ColumnMeta>;
   height?: string;
@@ -48,9 +55,15 @@ function shouldDisplayColumn(key: string, columnsMeta?: Record<string, ColumnMet
   return columnsMeta[key].display !== false;
 }
 
-const DynamicDataTable = ({ title, description, data, height = '400px', columnsMeta }: DynamicDataTableProps) => {
+const DynamicDataTable = ({
+  title,
+  description,
+  data,
+  height = '400px',
+  columnsMeta,
+}: DynamicDataTableProps) => {
   const [globalFilter, setGlobalFilter] = useState('');
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const columns = useMemo<ColumnDef<any>[]>(
     () =>
@@ -62,6 +75,10 @@ const DynamicDataTable = ({ title, description, data, height = '400px', columnsM
               header: ({ column }) => {
                 const isSorted = column.getIsSorted();
                 const label = getColumnLabel(key, columnsMeta);
+                const customHeader = columnsMeta?.[key]?.customHeader;
+
+                if (customHeader) return customHeader();
+
                 return (
                   <button
                     onClick={column.getToggleSortingHandler()}
@@ -75,11 +92,12 @@ const DynamicDataTable = ({ title, description, data, height = '400px', columnsM
               },
               cell: (info) => {
                 const value = info.getValue();
+                const row = info.row.original;
+                const customCell = columnsMeta?.[key]?.customCell;
 
-                if (
-                  Array.isArray(value) &&
-                  value.every((v) => typeof v === 'object' && v !== null)
-                ) {
+                if (customCell) return customCell(value, row);
+
+                if (Array.isArray(value) && value.every((v) => typeof v === 'object' && v !== null)) {
                   return `${value.length} record${value.length !== 1 ? 's' : ''}`;
                 }
 
@@ -117,12 +135,11 @@ const DynamicDataTable = ({ title, description, data, height = '400px', columnsM
 
   return (
     <Card className="p-4 space-y-4">
-      <CardHeader className='px-0'>
+      <CardHeader className="px-0">
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
 
-      {/* Global Filter */}
       <div className="flex justify-between items-center">
         <Input
           placeholder="Search..."
@@ -132,7 +149,6 @@ const DynamicDataTable = ({ title, description, data, height = '400px', columnsM
         />
       </div>
 
-      {/* Table */}
       <div className="relative border rounded overflow-hidden">
         <div className="overflow-y-auto" style={{ maxHeight: height }}>
           <Table>
@@ -162,7 +178,6 @@ const DynamicDataTable = ({ title, description, data, height = '400px', columnsM
         </div>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-500">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
