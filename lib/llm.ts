@@ -1,18 +1,20 @@
+// lib/llmService.ts
 import { OpenAI } from 'openai';
 import { runQuery } from './snowflake';
+import { parseLLMResponse } from './parseLLMResponse';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
 export const llmService = {
-  async chat({
+  async chat<T = any>({
     sessionId,
     userId,
     prompt,
     model = 'gpt-4',
     temperature = 0.4,
-    max_tokens = 1024
+    max_tokens = 2048,
   }: {
     sessionId: string;
     userId?: string;
@@ -20,10 +22,10 @@ export const llmService = {
     model?: string;
     temperature?: number;
     max_tokens?: number;
-  }): Promise<{ explanation: string; data_query: string }> {
+  }): Promise<T> {
     const start = Date.now();
     let responseText = '';
-    let parsedResponse: { explanation: string; data_query: string } = { explanation: '', data_query: '' };
+    let parsedResponse: T;
     let status: 'success' | 'failure' = 'success';
     let errorMessage = '';
     let usage = {
@@ -42,64 +44,56 @@ export const llmService = {
         temperature,
         max_tokens
       });
-
+      console.log("response", JSON.stringify(response))
       responseText = response.choices?.[0]?.message?.content?.trim() || '';
       usage = response.usage ?? usage;
+      console.log("LLM raw responseText:\n", responseText);
 
-      try {
-        parsedResponse = JSON.parse(responseText);
-
-        
-      } catch (jsonErr) {
-        throw new Error(`Failed to parse JSON from LLM: ${jsonErr.message}`);
-      }
+      parsedResponse = parseLLMResponse<T>(responseText);
     } catch (err: any) {
       console.error('[LLM ERROR]', err);
       status = 'failure';
       errorMessage = err.message || 'Unknown error';
-    }
-
-    const latency = Date.now() - start;
-
-    // Insert log entry into LLM_API_LOGS
-    const logQuery = `
-      INSERT INTO LLM_API_LOGS (
-        SESSION_ID, USER_ID, PROMPT_TEXT, RESPONSE_TEXT,
-        MODEL_USED, TEMPERATURE, MAX_TOKENS,
-        PROMPT_TOKENS, COMPLETION_TOKENS, TOTAL_TOKENS,
-        API_STATUS, ERROR_MESSAGE, LATENCY_MS
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    try {
-      await runQuery(logQuery, [
-        sessionId,
-        userId || null,
-        prompt,
-        responseText,
-        model,
-        temperature,
-        max_tokens,
-        usage.prompt_tokens,
-        usage.completion_tokens,
-        usage.total_tokens,
-        status,
-        errorMessage,
-        latency
-      ]);
-    } catch (logError) {
-      console.warn('[LLM LOGGING ERROR]', logError);
-    }
-
-    if (status === 'failure') {
       throw new Error(errorMessage);
+    } finally {
+      const latency = Date.now() - start;
+
+      // Log to Snowflake
+      const logQuery = `
+        INSERT INTO LLM_API_LOGS (
+          SESSION_ID, USER_ID, PROMPT_TEXT, RESPONSE_TEXT,
+          MODEL_USED, TEMPERATURE, MAX_TOKENS,
+          PROMPT_TOKENS, COMPLETION_TOKENS, TOTAL_TOKENS,
+          API_STATUS, ERROR_MESSAGE, LATENCY_MS
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      try {
+        await runQuery(logQuery, [
+          sessionId,
+          userId || null,
+          prompt,
+          responseText,
+          model,
+          temperature,
+          max_tokens,
+          usage.prompt_tokens,
+          usage.completion_tokens,
+          usage.total_tokens,
+          status,
+          errorMessage,
+          latency
+        ]);
+      } catch (logError) {
+        console.warn('[LLM LOGGING ERROR]', logError);
+      }
     }
 
     return parsedResponse;
   },
 
   async generateKeyMetrics(prompt: string, sessionId: string, userId?: string) {
-    return await this.chat({ sessionId, userId, prompt, model: 'gpt-4', temperature: 0.4 });
+    return await this.chat<any[]>({ sessionId, userId, prompt, model: 'gpt-4', temperature: 0.4 });
   },
 
   async generateSQLQuery(schemaPrompt: string, messages: { role: string; content: string }[], sessionId = 'default-session', userId?: string) {
@@ -110,6 +104,12 @@ User Messages:
 ${messages.map((m, i) => `${i + 1}. ${m.content}`).join('\n')}
 `.trim();
 
-    return await this.chat({ sessionId, userId, prompt: combinedPrompt, model: 'gpt-4', temperature: 0.2 });
+    return await this.chat<{ explanation: string; data_query: string }>({
+      sessionId,
+      userId,
+      prompt: combinedPrompt,
+      model: 'gpt-4',
+      temperature: 0.2
+    });
   }
 };

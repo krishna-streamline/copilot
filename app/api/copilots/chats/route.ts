@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
   
       let title = 'Untitled';
       if (!chat_id) {
+        
         const titlePrompt = `Create a short title for the following chat message: \n"${message}"`;
         const response = await openai.chat.completions.create({
           model: 'gpt-3.5-turbo',
@@ -52,6 +53,15 @@ export async function POST(req: NextRequest) {
           `INSERT INTO COPILOTS_CHATS (CHAT_ID, TITLE, USER_ID) VALUES (?, ?, ?)`,
           [new_chat_id, title, user_id]
         );
+      }
+      else{
+        const chats = await runQuery(
+          `SELECT CHAT_ID, TITLE, CREATED_AT FROM COPILOTS_CHATS WHERE CHAT_ID = ? ORDER BY CREATED_AT DESC`,
+          [new_chat_id]
+        );
+        const chat = chats[0]
+        title = chat['TITLE'].replaceAll('"',"")
+        
       }
   
       // Language Detection

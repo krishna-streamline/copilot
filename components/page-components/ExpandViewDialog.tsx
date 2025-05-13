@@ -15,8 +15,8 @@ import AddToCollectionButton from './AddToCollectionButton';
     setOpen: (open: boolean) => void;
   };
   const columnsMeta = {
-  name: {
-    name: 'Full Name',
+  UUID: {
+    name: 'UUID',
     customCell: (value) => <strong className="text-blue-600">{value}</strong>,
   },
   status: {
@@ -35,10 +35,359 @@ import AddToCollectionButton from './AddToCollectionButton';
       </span>
     ),
   },
-  id: {
-    name: 'Identifier',
-    customHeader: () => <span className="uppercase text-purple-600">🔑 ID</span>,
+  ID: {
+    name: 'ID',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">ID</span>,
   },
+  COUNTRYID: {
+    name: 'COUNTRY ID',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">COUNTRY ID</span>,
+  },
+  CITY: {
+    name: 'CITY',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">CITY</span>,
+  },
+  DONOTDISTURBENABLED: {
+    name: "Don't Disturb Enabled",
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Don't Disturb Enabled</span>,
+  },
+  IPADDRESS: {
+    name: 'IPADDRESS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Ip Address</span>,
+  },
+  LASTENROLLEDDATE: {
+    name: 'LASTENROLLEDDATE',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Last Enrolled Date</span>,
+  },
+  LASTINVENTORYUPDATEDATE: {
+    name: 'LASTINVENTORYUPDATEDATE',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Last Inventory Update Date</span>,
+  },
+  MANAGED: {
+    name: 'MANAGED',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">MANAGED</span>,
+  },
+  OSBUILD: {
+    name: 'OSBUILD',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">OS BUILD</span>,
+  },
+  OSVERSION: {
+    name: 'OSVERSION',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">OS VERSION</span>,
+  },
+  HARDWAREDEVICEID: {
+    name: 'HARDWAREDEVICEID',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Hardward Device Id</span>,
+  },
+  MODEL: {
+    name: 'MODEL',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">MODEL</span>,
+  },
+  MODELNUMBER: {
+    name: 'MODELNUMBER',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">MODEL NUMBER</span>,
+  },
+  DEVICE_MODEL: {
+    name: 'DEVICE_MODEL',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">DEVICE MODEL</span>,
+  },
+  SERIALNUMBER: {
+    name: 'SERIALNUMBER',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Serial Number</span>,
+  },
+  WIFIMACADDRESS: {
+    name: 'WIFIMACADDRESS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">WIFI MAC ADDRESS</span>,
+  },
+  BATTERYLEVEL: {
+    name: 'BATTERYLEVEL',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">BATTERY LEVEL</span>,
+  },
+  LOSTMODEENABLED: {
+    name: 'LOSTMODEENABLED',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">LOST MODE ENABLED</span>,
+  },
+  USERNAME: {
+    name: 'USERNAME',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">USERNAME</span>,
+  },
+  STORE: {
+    name: 'STORE',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">STORE</span>,
+  },
+  ENV: {
+    name: 'ENV',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">ENV</span>,
+  },
+  TYPE: {
+    name: 'TYPE',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">TYPE</span>,
+  },
+  PROFILES: {
+    name: 'PROFILES',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">PROFILES</span>,
+  },
+  SNAPSHOT_TIME: {
+    name: 'SNAPSHOT_TIME',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">SNAPSHOT TIME</span>,
+  },
+  TIMEZONE: {
+    name: 'TIMEZONE',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">TIMEZONE</span>,
+  },
+  OS_STATUS: {
+    name: 'OS_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">OS STATUS</span>,
+  },
+  OFFLINE_STATUS: {
+    name: 'OFFLINE_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">OFFLINE STATUS</span>,
+  },
+  CERTIFICATE_STATUS: {
+    name: 'CERTIFICATE_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">CERTIFICATE STATUS</span>,
+  },
+  CERTIFICATES: {
+    name: 'CERTIFICATES',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">CERTIFICATES</span>,
+  },
+  EXPIRED_CERTIFICATES: {
+    name: 'EXPIRED_CERTIFICATES',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">EXPIRED CERTIFICATES</span>,
+  },
+  APPLICATION_STATUS: {
+    name: 'APPLICATION_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">APPLICATION STATUS</span>,
+  },
+  APPLICATIONS: {
+    name: 'APPLICATIONS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">APPLICATIONS</span>,
+  },
+  DEVICE_HEALTH_STATUS: {
+    name: 'DEVICE_HEALTH_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">DEVICE HEALTH STATUS</span>,
+  },
+  DEVICEID: {
+    name: 'DEVICEID',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">DEVICEID</span>,
+  },
+  BATTERY_STATUS: {
+    name: 'BATTERY_STATUS',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">BATTERY STATUS</span>,
+  },
+  EXPIREDCERTCOUNT: {
+    name: 'EXPIREDCERTCOUNT',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">Expired Certificates Count</span>,
+  },
+  OUTDATEDAPPSCOUNT: {
+    name: 'OUTDATEDAPPSCOUNT',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">OUTDATED APPS COUNT</span>,
+  },
+  PROFILES: {
+    name: 'PROFILES',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">PROFILES</span>,
+  },
+  PROFILES: {
+    name: 'PROFILES',
+    customCell: (value) => (
+      <span>
+        {value}
+      </span>
+    ),
+    customHeader: () => <span className="uppercase">PROFILES</span>,
+  },
+
+  
 };
   
   const ExpandViewDialog = ({ chat_id, id, open, setOpen }: ExpandViewDialogProps) => {

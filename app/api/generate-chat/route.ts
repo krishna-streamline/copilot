@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
   const currentStore = searchParams.get('store_id');
 
   const postData = {}
+  //postData.tracking = {}
   postData['CHAT_ID'] = chatId
   postData['ROLE'] = 'assistant'
   postData['RELATED_QUERIES'] = ''
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const messagesFromDB = await getMessagesByChatId(chatId);
-    const userMessages = messagesFromDB.filter(msg => msg.role === 'user');
+    const userMessages = messagesFromDB//.filter(msg => msg.role === 'user');
     const storeFilterContext = currentStore
   ? `
 📌 CONTEXT:
@@ -131,20 +132,22 @@ Ignore any store filters mentioned by the user.`
     AND ${devicesSchema.latest_snapshot_rule};
   
   📦 RESPONSE FORMAT:
-  Return a valid JSON object in the following format:
+  Return **only** a single valid JSON object in the following format. Do not return any markdown code block, no extra text, no numbering, no explanation. The response should be plain JSON only.
+
+    
   {
-    "explanation": "A simple, human-friendly summary for end users describing what the results contain. Avoid using technical terms like 'query' or 'SQL'.",
-    "data_query": "The actual Snowflake SELECT statement for internal use (not shown to users)."
+    "explanation": "A simple, human-friendly summary for end users describing what the results contain.",
+    "data_query": "The actual Snowflake SELECT statement."
   }
   `.trim();
   
 
   
 
-
+    //postData.tracking.userMessages = userMessages
     // Step 1: Generate base query using LLM
     const llmOutput = await llmService.generateSQLQuery(schemaContext, userMessages);
-    
+    //postData.tracking.llmOutput = llmOutput
 
     const { data_query, explanation } = llmOutput;
     const baseQuery = data_query;
@@ -158,23 +161,27 @@ Ignore any store filters mentioned by the user.`
       const keyMetricsPrompt = `
 You are a helpful SQL assistant.
 
+🎯 Your task:
 Given:
-- A base SQL query that filters device-level data using WHERE conditions.
-- A list of column metadata (column name, type, description, and sample values).
+- A base SQL SELECT query with WHERE conditions filtering device-level data
+- A list of column metadata (name, type, description, and sample values)
 
-Your task:
-Generate a JSON array of key metric SQL queries that:
-- Use the same WHERE clause from the base query
-- Apply aggregate functions like COUNT, AVG, MAX, MIN, GROUP BY
-- Summarize device behavior, battery levels, outdated OS, etc.
+🧠 Generate a concise JSON array of 3–5 SQL metric objects that:
+- Reuse the same WHERE clause from the base query
+- Use aggregate functions like COUNT, AVG, MAX, MIN, and GROUP BY
+- Focus on meaningful device insights like battery level, OS health, model distribution, and geographic trends
 
-Each JSON object must include:
-- "uuid": Generate unique uuid number to identify each query
-- "query": Full SQL query
-- "explanation": What the query analyzes
-- "columns": Friendly names of the selected fields for frontend display
+📦 Each object in the JSON array must include:
+- "uuid": a unique UUIDv4
+- "query": the full SQL query (no line breaks)
+- "explanation": a brief 1-sentence description of what the query analyzes (max 20 words)
+- "columns": a list of user-friendly names for frontend display
 
-Return 5–10 metric queries.
+📏 Constraints:
+- Return only a valid JSON array, no markdown, no comments, no extra text
+- Keep each query under 200 characters
+- Do NOT return more than 5 objects
+- Assume latest snapshot filter is required unless already in base query
 
 ---
 
@@ -184,24 +191,17 @@ ${baseQuery}
 Column Metadata:
 ${JSON.stringify(deviceInfoSchema.aggregate_columns, null, 2)}
 
-Expected Output Example:
+✅ JSON Output Format:
 [
   {
-    "uuid":"0384decf-0cd4-46d6-9e67-79d3487d6385",
-    "query": "SELECT OSVERSION, COUNT(*) AS device_count FROM MAIN_DEVICES WHERE OS_STATUS = 'UNHEALTHY' AND SNAPSHOT_TIME = (SELECT MAX(SNAPSHOT_TIME) FROM MAIN_DEVICES) GROUP BY OSVERSION;",
-    "explanation": "Shows count of outdated devices per OS version.",
-    "columns": ["OS Version", "Device Count"]
-  },
-  {
-    "uuid":"1ed1731c-a5d8-4d4e-afe0-f91326337eb5"
-    "query": "SELECT MODEL, AVG(BATTERYLEVEL) AS avg_battery FROM MAIN_DEVICES WHERE OS_STATUS = 'UNHEALTHY' AND SNAPSHOT_TIME = (SELECT MAX(SNAPSHOT_TIME) FROM MAIN_DEVICES) GROUP BY MODEL;",
-    "explanation": "Displays average battery level grouped by device model.",
-    "columns": ["Device Model", "Average Battery Level"]
+    "uuid": "uuid-v4",
+    "query": "SELECT MODEL, COUNT(*) AS count FROM MAIN_DEVICES WHERE ... GROUP BY MODEL;",
+    "explanation": "Shows how many devices exist per model.",
+    "columns": ["Model", "Count"]
   }
 ]
-
-Respond with only the JSON array.
 `.trim();
+
 
       const rawKeyMetricsResponse = await llmService.generateKeyMetrics(
         keyMetricsPrompt,
@@ -248,14 +248,24 @@ Respond with only the JSON array.
     
 
   } catch (error: any) {
-    console.error('[generate-chat] error:', error);
-    postData['ROLE'] = 'assistant'
-    postData['ERROR'] = { error: error.message || 'Internal Server Error' }
-    postData.message = {
-      type:'error',
-      text:error.message
+    console.error('[generate-chat] error:', error); // logs error object
+
+    // ✅ log full stack trace to see line number
+    if (error instanceof Error && error.stack) {
+      console.error('[generate-chat] stack trace:', error.stack);
     }
-    //return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+
+    postData['ROLE'] = 'assistant';
+    postData['ERROR'] = {
+      message: error.message || 'Internal Server Error',
+      stack: error.stack || '',
+    };
+    postData.message = {
+      type: 'error',
+      text: error.message,
+    };
+
+    // return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
   await runQuery(
     `INSERT INTO COPILOTS_CHAT_MESSAGES 

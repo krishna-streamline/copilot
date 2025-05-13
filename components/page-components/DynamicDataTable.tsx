@@ -76,7 +76,7 @@ const DynamicDataTable = ({
                 const isSorted = column.getIsSorted();
                 const label = getColumnLabel(key, columnsMeta);
                 const customHeader = columnsMeta?.[key]?.customHeader;
-
+                console.log("customHeader",customHeader)
                 if (customHeader) return customHeader();
 
                 return (

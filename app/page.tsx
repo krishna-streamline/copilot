@@ -39,11 +39,12 @@ export default function Home() {
   const chatId = searchParams.get("chat_id") || "";
   const store = searchParams.get("store") || "";
   const [message, setMessage] = useState('')
-  const [selectedChatId, setSelectedChatId] = useState(chatId)
+  const [selectedChatId, setSelectedChatId] = useState(searchParams.get("chat_id"))
   const [title, setTitle] = useState('New Chat')
   const incrementRefreshCounter = useSetAtom(refreshCounterAtom);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inProgress, setInProgress] = useState(false)
+  const [isInitialLoad, setIsInitialLoad] = useState(false)
   
   const [refreshChatMessage, setRefreshChatMessage] = useState(0)
   const [response, setResponse] = useState<any>(null);
@@ -57,7 +58,7 @@ export default function Home() {
     }
   },[token,router])
   useEffect(()=>{
-    if(chatId && chatId.length){
+    if(selectedChatId && selectedChatId.length){
       try {
         const fetchChatInfo = async() => {
           const res = await fetch(`/api/copilots/chats/${selectedChatId}`);
@@ -75,7 +76,9 @@ export default function Home() {
         
       }
     }
-  },[selectedChatId])
+    else{
+    }
+  },[router, selectedChatId])
   useEffect(() => {
     const fetchChats = async() =>{
       const res = await fetch(`/api/copilots/chats/${selectedChatId}/messages`);
@@ -102,7 +105,7 @@ export default function Home() {
     if(selectedChatId && selectedChatId.length){
     fetchChats()
     }
-  },[refreshChatMessage])
+  },[router, refreshChatMessage])
   useEffect(()=>{
     console.log(message)
   },[message])
@@ -118,8 +121,10 @@ export default function Home() {
 
       } else {
         setError(data.error || 'Failed to generate SQL');
+        setInProgress(false)
       }
     } catch (err: any) {
+      setInProgress(false)
       
     } finally {
       
@@ -167,6 +172,7 @@ export default function Home() {
         setResponse(data);
         const chatId = data.chat_id;
         setSelectedChatId(chatId)
+        console.log(data)
         setTitle(data.title.replaceAll("/",'').replaceAll('"','') || 'New Chat')
         incrementRefreshCounter((prev) => prev + 1);
         
@@ -189,7 +195,7 @@ export default function Home() {
     <div className="flex-1 flex flex-col overflow-hidden">
       <ChatHeader send={setMessage} title={title} />
       {
-        inProgress ? 
+        isInitialLoad ? 
         (
           <ChatSkeletonLoader />
         ):
