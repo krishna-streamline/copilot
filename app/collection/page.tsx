@@ -118,8 +118,8 @@ export default function Collections() {
       ):
       (
         <DynamicDataTable
-      title="Title"
-      description="Description"
+      title=""
+      description=""
       data={collectionData?.main_query?.result || []}
       columnsMeta={columnsMeta}
     />

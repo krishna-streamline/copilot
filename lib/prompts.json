@@ -293,6 +293,256 @@
       "category": "Devices",
       "subcategory": "Anomaly Detection",
       "prompt": "Detect devices where Lost Mode was enabled but inventory was never updated"
-    }
+    },
+    {
+    "category": "Device Telemetry",
+    "subcategory": "CPU Usage",
+    "prompt": "List devices with CPU usage above 90%"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "CPU Usage",
+    "prompt": "Find devices with high CPU load over time"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Memory Usage",
+    "prompt": "Find devices using more than 1 GB RAM"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Memory Usage",
+    "prompt": "List devices with memory usage above 500 MB"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Find devices currently charging"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "List devices not plugged into power"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Show battery percentage of all devices"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Devices with battery below 15% but not charging"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "Find devices connected to 'Retail_WiFi'"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "List devices without network connectivity"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "Devices connected to guest network"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Find devices with GPS disabled"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Devices near latitude 25.276987 and longitude 55.296249"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "List devices with invalid or missing location data"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Find devices with location services enabled"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Devices running app 'iElevate' in Production"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Find devices using SDK version 3.2.1"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Devices with app version older than 2.0.0"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "List devices using test build apps"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "List latest telemetry snapshot for each device"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Find devices missing telemetry updates in last 1 hour"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Show recent telemetry for device 'iPad-AJ12345'"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Find devices where telemetry is reporting invalid app data"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Anomaly Detection",
+    "prompt": "Detect devices with sudden battery drop below 10%"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Anomaly Detection",
+    "prompt": "Identify devices with 100% CPU and low memory"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "CPU Usage",
+    "prompt": "List devices with CPU usage above 90%"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "CPU Usage",
+    "prompt": "Find devices with high CPU load over time"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Memory Usage",
+    "prompt": "Find devices using more than 1 GB RAM"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Memory Usage",
+    "prompt": "List devices with memory usage above 500 MB"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Find devices currently charging"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "List devices not plugged into power"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Show battery percentage of all devices"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Battery",
+    "prompt": "Devices with battery below 15% but not charging"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "Find devices connected to 'Retail_WiFi'"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "List devices without network connectivity"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Network",
+    "prompt": "Devices connected to guest network"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Find devices with GPS disabled"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Devices near latitude 25.276987 and longitude 55.296249"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "List devices with invalid or missing location data"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Location",
+    "prompt": "Find devices with location services enabled"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Devices running app 'iElevate' in Production"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Find devices using SDK version 3.2.1"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "Devices with app version older than 2.0.0"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "App Info",
+    "prompt": "List devices using test build apps"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "List latest telemetry snapshot for each device"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Find devices missing telemetry updates in last 1 hour"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Show recent telemetry for device 'iPad-AJ12345'"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "General",
+    "prompt": "Find devices where telemetry is reporting invalid app data"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Anomaly Detection",
+    "prompt": "Detect devices with sudden battery drop below 10%"
+  },
+  {
+    "category": "Device Telemetry",
+    "subcategory": "Anomaly Detection",
+    "prompt": "Identify devices with 100% CPU and low memory"
+  }
   ]
   

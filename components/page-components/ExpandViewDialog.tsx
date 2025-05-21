@@ -14,6 +14,32 @@ import AddToCollectionButton from './AddToCollectionButton';
     open: boolean;
     setOpen: (open: boolean) => void;
   };
+    const handleJsonColumns = (input, title) => {
+  const handleArray = (arr) => {
+    console.log(`✅ Valid Array:`, arr);
+    return `<span>${arr.length} ${title}</span>`; // Example: return length
+  };
+
+  // If input is already an array
+  if (Array.isArray(input)) {
+    return handleArray(input);
+  }
+
+  // If input is a string, try parsing
+  if (typeof input === 'string') {
+    try {
+      const parsed = JSON.parse(input);
+      if (Array.isArray(parsed)) {
+        return handleArray(parsed);
+      }
+    } catch (err) {
+      // Ignore error
+    }
+  }
+
+  // Fallback: return as string
+  return `<span>${input}  ${title}</span>`;
+};
   const columnsMeta = {
   UUID: {
     name: 'UUID',
@@ -235,11 +261,11 @@ import AddToCollectionButton from './AddToCollectionButton';
   },
   PROFILES: {
     name: 'PROFILES',
-    customCell: (value) => (
-      <span>
-        {value}
-      </span>
-    ),
+    customCell: (value) => {
+      return (
+        <p dangerouslySetInnerHTML={{ __html: handleJsonColumns(value, 'Profiles') }}></p>
+      )
+    },
     customHeader: () => <span className="uppercase">PROFILES</span>,
   },
   SNAPSHOT_TIME: {
@@ -289,20 +315,20 @@ import AddToCollectionButton from './AddToCollectionButton';
   },
   CERTIFICATES: {
     name: 'CERTIFICATES',
-    customCell: (value) => (
-      <span>
-        {value}
-      </span>
-    ),
+    customCell: (value) => {
+      return (
+        <p dangerouslySetInnerHTML={{ __html: handleJsonColumns(value, 'Certificates') }}></p>
+      )
+    },
     customHeader: () => <span className="uppercase">CERTIFICATES</span>,
   },
   EXPIRED_CERTIFICATES: {
     name: 'EXPIRED_CERTIFICATES',
-    customCell: (value) => (
-      <span>
-        {value}
-      </span>
-    ),
+    customCell: (value) => {
+      return (
+        <p dangerouslySetInnerHTML={{ __html: handleJsonColumns(value, 'Expired Certificates') }}></p>
+      )
+    },
     customHeader: () => <span className="uppercase">EXPIRED CERTIFICATES</span>,
   },
   APPLICATION_STATUS: {
@@ -316,11 +342,11 @@ import AddToCollectionButton from './AddToCollectionButton';
   },
   APPLICATIONS: {
     name: 'APPLICATIONS',
-    customCell: (value) => (
-      <span>
-        {value}
-      </span>
-    ),
+    customCell: (value) => {
+      return (
+        <p dangerouslySetInnerHTML={{ __html: handleJsonColumns(value, 'Applications') }}></p>
+      )
+    },
     customHeader: () => <span className="uppercase">APPLICATIONS</span>,
   },
   DEVICE_HEALTH_STATUS: {
@@ -368,17 +394,17 @@ import AddToCollectionButton from './AddToCollectionButton';
     ),
     customHeader: () => <span className="uppercase">OUTDATED APPS COUNT</span>,
   },
-  PROFILES: {
-    name: 'PROFILES',
+  STORE_NAME: {
+    name: 'STORE_NAME',
     customCell: (value) => (
       <span>
         {value}
       </span>
     ),
-    customHeader: () => <span className="uppercase">PROFILES</span>,
+    customHeader: () => <span className="uppercase">Store Name</span>,
   },
-  PROFILES: {
-    name: 'PROFILES',
+  PROFILES1: {
+    name: 'PROFILES1',
     customCell: (value) => (
       <span>
         {value}
